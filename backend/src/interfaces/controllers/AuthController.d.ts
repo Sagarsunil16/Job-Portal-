@@ -1,0 +1,15 @@
+import { Request, Response, NextFunction } from 'express';
+import { IAuthUseCase } from '../useCases/authUseCase/IAuthUseCase';
+type AuthControllerConstructorParams = {
+    AuthUseCase: IAuthUseCase;
+};
+export declare class AuthController {
+    private authUseCase;
+    constructor({ AuthUseCase }: AuthControllerConstructorParams);
+    signup(req: Request, res: Response, next: NextFunction): Promise<void>;
+    login(req: Request, res: Response, next: NextFunction): Promise<void>;
+    refreshToken(req: Request, res: Response, next: NextFunction): Promise<void>;
+    logout(req: Request, res: Response, next: NextFunction): Promise<void>;
+}
+export {};
+//# sourceMappingURL=AuthController.d.ts.map

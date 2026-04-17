@@ -4,7 +4,7 @@ import { JobModel, IJob } from '../database/schemas/JobSchema';
 export class JobRepository {
   private mapToDTO(job: IJob): JobDTO {
     return {
-      id: job._id as string,
+      id: job._id ? job._id.toString() : '',
       title: job.title,
       description: job.description,
       companyName: job.companyName,

@@ -28,7 +28,7 @@ export class JobController {
 
   getJobById = async (req: Request, res: Response): Promise<void> => {
     try {
-      const job = await this.jobEngine.getJobById(req.params.id);
+      const job = await this.jobEngine.getJobById(req.params.id as string);
       if (!job) {
         res.status(404).json({ success: false, message: 'Job not found' });
         return;
@@ -41,7 +41,7 @@ export class JobController {
 
   updateJob = async (req: Request, res: Response): Promise<void> => {
     try {
-      const job = await this.jobEngine.updateJob(req.params.id, req.body);
+      const job = await this.jobEngine.updateJob(req.params.id as string, req.body);
       if (!job) {
         res.status(404).json({ success: false, message: 'Job not found' });
         return;
@@ -54,7 +54,7 @@ export class JobController {
 
   deleteJob = async (req: Request, res: Response): Promise<void> => {
     try {
-      const success = await this.jobEngine.deleteJob(req.params.id);
+      const success = await this.jobEngine.deleteJob(req.params.id as string);
       if (!success) {
         res.status(404).json({ success: false, message: 'Job not found' });
         return;
