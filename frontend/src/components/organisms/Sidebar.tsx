@@ -52,52 +52,56 @@ export const Sidebar: React.FC = () => {
         />
       )}
 
-      <aside className={`w-[280px] h-full bg-white border-r border-gray-200 flex flex-col pt-6 shrink-0 
+      <aside className={`w-[320px] h-full bg-white border-r border-[#E5E5E6] flex flex-col py-5 pl-10 pr-0 shrink-0 
         fixed md:relative top-0 left-0 bottom-0 z-50 transform transition-transform duration-300 ease-in-out
         ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
         md:translate-x-0`}
       >
-      <div className="px-8 pb-4">
-        <span className="text-xs font-semibold text-gray-400 tracking-wider">EMPLOYERS DASHBOARD</span>
-      </div>
-      
-      <nav className="flex-1 px-4 flex flex-col gap-1">
-        {MENU_ITEMS.map((item) => {
-          const isActive = 
-            item.href === '/dashboard' 
-              ? pathname === '/dashboard' || source === 'overview'
-              : item.href === '/my-jobs'
-                ? pathname.startsWith('/my-jobs') || (pathname.startsWith('/jobs') && source !== 'overview')
-                : source === 'overview' ? false : pathname.startsWith(item.href);
-          const Icon = item.icon;
-          
-          return (
-            <Link 
-              key={item.name} 
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${
-                isActive 
-                  ? 'bg-[#EBF1FF] text-indigo-600 border-l-2 border-indigo-600' 
-                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-              }`}
-            >
-              <Icon className="w-5 h-5" />
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
+        <div className="flex flex-col h-full justify-between">
+          <div className="flex flex-col gap-[11px]">
+            <div className="w-[280px]">
+              <span className="text-[14px] font-medium text-[#7E7E86] leading-[21px] tracking-tight">EMPLOYERS DASHBOARD</span>
+            </div>
+            
+            <nav className="flex flex-col">
+              {MENU_ITEMS.map((item) => {
+                const isActive = 
+                  item.href === '/dashboard' 
+                    ? pathname === '/dashboard' || source === 'overview'
+                    : item.href === '/my-jobs'
+                      ? pathname.startsWith('/my-jobs') || (pathname.startsWith('/jobs') && source !== 'overview')
+                      : source === 'overview' ? false : pathname.startsWith(item.href);
+                const Icon = item.icon;
+                
+                return (
+                  <Link 
+                    key={item.name} 
+                    href={item.href}
+                    className={`flex items-center gap-[16px] w-[280px] h-[48px] px-[20px] py-[12px] text-[16px] font-medium transition-colors ${
+                      isActive 
+                        ? 'bg-[#E5E6FB] text-[#5D5FEF] border-l-[3px] border-[#5D5FEF]' 
+                        : 'text-[#7E7E86] hover:text-[#333333]'
+                    }`}
+                  >
+                    <Icon className={`w-6 h-6 ${isActive ? 'text-[#5D5FEF]' : 'text-[#7E7E86]'}`} />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
 
-      <div className="p-4 border-t border-gray-100">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          Log Out
-        </button>
-      </div>
-    </aside>
+          <div className="w-[280px]">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-[16px] w-full h-[48px] px-[20px] py-[12px] text-[16px] font-medium text-[#7E7E86] hover:text-[#333333] transition-colors"
+            >
+              <LogOut className="w-6 h-6 text-[#7E7E86]" />
+              Log Out
+            </button>
+          </div>
+        </div>
+      </aside>
     </>
   );
 };
