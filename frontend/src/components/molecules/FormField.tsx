@@ -109,10 +109,10 @@ export const FormField: React.FC<FormFieldProps> = ({
   };
 
   return (
-    <div className={`text-left w-full ${controlType === 'file' ? 'mb-8' : 'mb-5'}`}>
-      {label && <label className="block text-[13px] text-gray-500 mb-1.5">{label}</label>}
+    <div className={`text-left w-full ${controlType === 'file' ? 'mb-8' : 'mb-[16px]'}`}>
+      {label && <label className="block text-[16px] leading-[24px] font-poppins text-[#7E7E86] mb-[4px]">{label}</label>}
       {renderControl()}
-      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+      {error && <p className="mt-[4px] text-[14px] leading-[21px] font-poppins text-[#EE1D52]">{error}</p>}
     </div>
   );
 };

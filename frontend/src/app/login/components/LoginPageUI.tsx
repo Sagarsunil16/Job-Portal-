@@ -14,42 +14,51 @@ interface LoginPageUIProps {
 
 export const LoginPageUI: React.FC<LoginPageUIProps> = ({ onLoginSubmit }) => {
   const loginContent = (
-    <>
-      {/* Logo positioned absolute at the top, aligned perfectly left with the form text */}
-      <div className="absolute top-2 left-0 flex items-center">
-        <Logo />
-      </div>
-
-      <div className="w-full flex flex-col mt-16 md:mt-0">
-        <h2 className="text-[28px] font-semibold text-gray-900 mb-2">Log In to JobPilot</h2>
-        <p className="text-[14px] text-gray-500 mb-8">
-          Don't have an account?{' '}
-          <Link href="/signup" className="text-gray-700 underline font-medium hover:text-gray-900">
+    /* Form Wrapper: Absolute positioning on desktop as per Figma */
+    <div className="xl:absolute xl:left-[80px] xl:top-[224px] w-full max-w-[682px] flex flex-col gap-6 sm:gap-[32px] animate-in fade-in duration-500">
+      
+      {/* Header Section */}
+      <div className="flex flex-col gap-[2px]">
+        <h2 className="text-2xl sm:text-[32px] font-medium leading-tight sm:leading-[48px] text-[#434348] font-poppins flex items-center">
+          Log In to JobPilot
+        </h2>
+        <div className="flex items-center gap-[4px] p-[2px] flex-wrap">
+          <span className="text-sm sm:text-[16px] leading-[24px] text-[#434348] font-poppins">
+            Don't have an account?
+          </span>
+          <Link href="/signup" className="text-sm sm:text-[16px] leading-[24px] text-[#434348] font-poppins underline decoration-1 underline-offset-2">
             Sign Up
           </Link>
-        </p>
+        </div>
+      </div>
 
+      {/* Form Section */}
+      <div className="flex flex-col">
         <DynamicForm 
           config={loginConfig} 
           validationSchema={loginSchema}
           onSubmit={onLoginSubmit} 
           forgotPasswordLink={
-            <div className="text-right mb-5 -mt-2.5">
-              <Link href="/forgot-password" className="text-[13px] text-gray-500 hover:text-gray-800 underline decoration-gray-400">
+            <div className="flex justify-end mt-[4px] mb-[24px]">
+              <Link href="/forgot-password" title="Forget your password" className="text-[16px] leading-[24px] text-[#434348] font-poppins underline underline-offset-2">
                 Forget your password
               </Link>
             </div>
           }
         />
+      </div>
 
-        <Divider text="OR" className="my-6" />
+      {/* Divider and Social Section */}
+      <div className="flex flex-col gap-[24px]">
+        <Divider text="OR" />
         <SocialAuthButtons />
       </div>
-    </>
+    </div>
   );
 
   return (
     <AuthTemplate 
+      logo={<Logo />}
       leftContent={loginContent}
       rightImageSrc="/images/login-bg.jpg"
       rightImageAlt="Team collaborating"

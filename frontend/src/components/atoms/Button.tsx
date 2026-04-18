@@ -12,12 +12,12 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props 
 }) => {
-  const baseStyles = 'rounded-full text-[15px] cursor-pointer transition-colors flex items-center justify-center font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2';
+  const baseStyles = 'cursor-pointer transition-all flex items-center justify-center font-poppins focus:outline-none focus:ring-2 focus:ring-[#5D5FEF] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variants = {
-    primary: 'bg-[#6366f1] text-white hover:bg-indigo-600 px-6 py-3 shadow-sm',
-    outline: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-6 py-3 text-[14px] gap-2',
-    text: 'bg-transparent text-gray-500 hover:text-gray-800 p-2 text-[13px] hover:bg-gray-50',
+    primary: 'bg-[#5D5FEF] text-white hover:bg-[#4b4ce0] h-[56px] text-[18px] font-medium rounded-[32px] shadow-sm whitespace-nowrap px-8',
+    outline: 'bg-white text-[#434348] border-[1.5px] border-[#E5E5E5] hover:bg-gray-50 h-[56px] text-[18px] rounded-[40px] px-8 gap-4 whitespace-nowrap',
+    text: 'bg-transparent text-[#7E7E86] hover:text-[#434348] p-2 text-[14px] hover:bg-gray-50 rounded-lg whitespace-nowrap',
   };
 
   const widthClass = fullWidth ? 'w-full' : 'flex-1';
