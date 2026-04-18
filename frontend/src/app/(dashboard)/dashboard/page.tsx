@@ -65,49 +65,55 @@ export default function DashboardPage() {
     fetchJobs();
   }, [page, debouncedSearch]);
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col gap-6 sm:gap-8 w-full p-4 sm:p-6 md:p-8">
       {/* Header */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-[28px] font-semibold text-gray-900">Hello, {companyName}</h1>
-        <p className="text-gray-500 text-[15px]">Here is your daily activity and applications</p>
+      <div className="flex flex-col">
+        <h1 className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">Hello, {companyName}</h1>
+        <p className="text-[#7E7E86] text-[16px] font-normal font-poppins leading-[24px] mt-[2px]">Here is your daily activity and applications</p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="flex gap-6 w-full flex-wrap">
-        <div className="bg-[#EBF1FF] rounded-xl p-6 flex items-center justify-between min-w-[280px]">
-          <div>
-            <p className="text-2xl font-semibold text-gray-900">10</p>
-            <p className="text-gray-600 text-sm mt-1">Open Jobs</p>
+      {/* Summary Cards (Quick Info) */}
+      <div className="flex flex-col sm:flex-row gap-6 sm:gap-[24px] w-full flex-wrap">
+        {/* Open Jobs Card */}
+        <div className="w-full sm:w-[312px] h-auto sm:h-[102px] bg-[#E5E6FB] rounded-[12px] p-[20px] flex items-start gap-[10px]">
+          <div className="flex-1 flex flex-col">
+            <p className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">10</p>
+            <p className="text-[#434348] text-[16px] font-normal font-poppins leading-[24px]">Open Jobs</p>
           </div>
-          <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center text-indigo-600 shadow-sm">
-            <Briefcase className="w-6 h-6" />
+          <div className="w-[60px] h-[60px] bg-white rounded-[6px] flex items-center justify-center shadow-sm shrink-0">
+            <Briefcase className="w-[32px] h-[32px] text-[#141B34]" />
           </div>
         </div>
 
-        <div className="bg-[#FFF4E5] rounded-xl p-6 flex items-center justify-between min-w-[280px]">
-          <div>
-            <p className="text-2xl font-semibold text-gray-900">200</p>
-            <p className="text-gray-600 text-sm mt-1">Saved Candidates</p>
+        {/* Saved Candidates Card */}
+        <div className="w-full sm:w-[312px] h-auto sm:h-[102px] bg-[#FCF3E4] rounded-[12px] p-[20px] flex items-start gap-[10px]">
+          <div className="flex-1 flex flex-col">
+            <p className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">200</p>
+            <p className="text-[#434348] text-[16px] font-normal font-poppins leading-[24px]">Saved Candidates</p>
           </div>
-          <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center text-orange-500 shadow-sm">
-            <Users className="w-6 h-6" />
+          <div className="w-[60px] h-[60px] bg-white rounded-[6px] flex items-center justify-center shadow-sm shrink-0">
+            <Users className="w-[32px] h-[32px] text-[#141B34]" />
           </div>
         </div>
       </div>
 
-      <JobsTableWidget 
-        jobs={jobs} 
-        title="Recently Posted Jobs" 
-        isLoading={isLoading}
-        searchQuery={search}
-        onSearchChange={setSearch}
-        currentPage={page}
-        totalPages={totalPages}
-        totalItems={totalItems}
-        onPageChange={setPage}
-        sourceUrlParam="overview"
-        currentEmployerId={employerId || undefined}
-      />
+      <div className="w-full">
+        <JobsTableWidget 
+          jobs={jobs} 
+          title="Recently Posted Jobs" 
+          isLoading={isLoading}
+          searchQuery={search}
+          onSearchChange={setSearch}
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          onPageChange={setPage}
+          sourceUrlParam="overview"
+          currentEmployerId={employerId || undefined}
+          showSearch={true}
+          showPagination={false}
+        />
+      </div>
     </div>
   );
 }

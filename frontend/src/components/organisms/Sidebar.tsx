@@ -18,12 +18,12 @@ import {
 
 const MENU_ITEMS = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Employers profile', href: '/profile', icon: User },
+  { name: 'Employers profile', href: '#', icon: User, disabled: true },
   { name: 'Post a Job', href: '/post-job', icon: PlusCircle },
   { name: 'My Jobs', href: '/my-jobs', icon: Briefcase },
-  { name: 'Saved Candidate', href: '/candidates', icon: Bookmark },
-  { name: 'Plans & Billing', href: '/billing', icon: CreditCard },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Saved Candidate', href: '#', icon: Bookmark, disabled: true },
+  { name: 'Plans & Billing', href: '#', icon: CreditCard, disabled: true },
+  { name: 'Settings', href: '#', icon: Settings, disabled: true },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -65,6 +65,19 @@ export const Sidebar: React.FC = () => {
             
             <nav className="flex flex-col">
               {MENU_ITEMS.map((item) => {
+                if (item.disabled) {
+                  const Icon = item.icon;
+                  return (
+                    <div 
+                      key={item.name} 
+                      className="flex items-center gap-[16px] w-[280px] h-[48px] px-[20px] py-[12px] text-[16px] font-medium text-[#7E7E86] opacity-40 cursor-not-allowed font-poppins"
+                    >
+                      <Icon className="w-6 h-6 text-[#7E7E86]" />
+                      <span className="flex-1">{item.name}</span>
+                    </div>
+                  );
+                }
+
                 const isActive = 
                   item.href === '/dashboard' 
                     ? pathname === '/dashboard' || source === 'overview'
@@ -77,7 +90,7 @@ export const Sidebar: React.FC = () => {
                   <Link 
                     key={item.name} 
                     href={item.href}
-                    className={`flex items-center gap-[16px] w-[280px] h-[48px] px-[20px] py-[12px] text-[16px] font-medium transition-colors ${
+                    className={`flex items-center gap-[16px] w-[280px] h-[48px] px-[20px] py-[12px] text-[16px] font-medium transition-colors font-poppins ${
                       isActive 
                         ? 'bg-[#E5E6FB] text-[#5D5FEF] border-l-[3px] border-[#5D5FEF]' 
                         : 'text-[#7E7E86] hover:text-[#333333]'

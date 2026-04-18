@@ -38,6 +38,9 @@ interface JobsTableWidgetProps {
   totalItems?: number;
   sourceUrlParam?: string;
   currentEmployerId?: string;
+  viewAllHref?: string;
+  showSearch?: boolean;
+  showPagination?: boolean;
 }
 
 export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({ 
@@ -51,17 +54,16 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
   onPageChange,
   totalItems = 0,
   sourceUrlParam,
-  currentEmployerId
+  currentEmployerId,
+  viewAllHref,
+  showSearch = true,
+  showPagination = true
 }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | number | null>(null);
   const [jobToDelete, setJobToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const ITEMS_PER_PAGE = 7;
-
-  // We no longer slice or filter locally since the server handles it if controlled.
-  // But if parent isn't passing onPageChange, we could optionally handle it locally.
-  // Assuming strict server-side control for this task.
   const currentJobs = jobs;
 
   const handleNextPage = () => {
@@ -81,7 +83,6 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
     try {
       setIsDeleting(true);
       await deleteJob(jobToDelete);
-      // Hard reload perfectly cleans the state universally for both dashboard and my-jobs data tables
       window.location.reload();
     } catch (err) {
       console.error("Failed to delete job", err);
@@ -92,103 +93,112 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <div className="flex items-center justify-between">
-        {title ? <h2 className="text-lg font-semibold text-gray-900">{title}</h2> : <div />}
-        <div className="flex gap-4 items-center">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Search jobs..." 
-              value={searchQuery}
-              onChange={(e) => {
-                if (onSearchChange) onSearchChange(e.target.value);
-              }}
-              className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm outline-none focus:border-indigo-500 transition-colors text-gray-900 placeholder:text-gray-400 max-w-[200px] md:max-w-xs"
-            />
-          </div>
+    <div className="flex flex-col gap-[16px] w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full h-auto sm:h-[30px] gap-4 sm:gap-0">
+        {title && (
+          <h2 className="text-[20px] font-medium text-[#434348] font-poppins">{title}</h2>
+        )}
+        <div className="flex items-center gap-[12px] sm:gap-[24px] w-full sm:w-auto">
+          {showSearch && (
+            <div className="relative w-full sm:w-auto">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Search jobs..." 
+                value={searchQuery}
+                onChange={(e) => {
+                  if (onSearchChange) onSearchChange(e.target.value);
+                }}
+                className="pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm outline-none focus:border-indigo-500 transition-colors text-gray-900 placeholder:text-gray-400 w-full sm:w-[240px]"
+              />
+            </div>
+          )}
+          {viewAllHref && (
+            <Link href={viewAllHref} className="text-[16px] font-medium text-[#7E7E86] hover:text-[#5D5FEF] transition-colors font-poppins shrink-0">
+              View all
+            </Link>
+          )}
         </div>
       </div>
 
-      <div className="w-full bg-white rounded-lg shadow-sm border border-gray-100">
+      <div className="w-full">
         <div className="w-full overflow-x-auto lg:overflow-visible">
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead className="bg-[#F8F9FA]">
-              <tr className="border-b border-gray-100 text-sm text-gray-500 font-medium">
-                <th className="px-6 py-4 font-medium rounded-tl-lg">Jobs</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium">Applications</th>
-                <th className="px-6 py-4 font-medium text-right rounded-tr-lg">Actions</th>
+          <table className="w-full text-left border-collapse min-w-[1128px]">
+            <thead>
+              <tr className="h-[40px] bg-[#F2F2F3] rounded-[8px]">
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins rounded-l-[8px] w-[458px]">Jobs</th>
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins w-[200px]">Status</th>
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins w-[242px]">Applications</th>
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins rounded-r-[8px] w-[228px] text-right pr-[40px]">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i}>
-                    <td className="px-6 py-4">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-48 mb-2" />
-                      <div className="h-3 bg-gray-100 rounded animate-pulse w-32" />
+                  <tr key={i} className="h-[80px] border-b border-[#F2F2F3]">
+                    <td className="px-[12px]">
+                      <div className="h-4 bg-gray-100 rounded animate-pulse w-48 mb-2" />
+                      <div className="h-3 bg-gray-50 rounded animate-pulse w-32" />
                     </td>
-                    <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded animate-pulse w-16" /></td>
-                    <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded animate-pulse w-24" /></td>
-                    <td className="px-6 py-4 text-right"><div className="h-8 bg-gray-200 rounded animate-pulse w-24 ml-auto" /></td>
+                    <td className="px-[12px]"><div className="h-4 bg-gray-100 rounded animate-pulse w-16" /></td>
+                    <td className="px-[12px]"><div className="h-4 bg-gray-100 rounded animate-pulse w-24" /></td>
+                    <td className="px-[12px] text-right pr-[40px]"><div className="h-10 bg-gray-100 rounded-full animate-pulse w-[146px] inline-block mr-[58px]" /></td>
                   </tr>
                 ))
               ) : currentJobs.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={4} className="px-[12px] py-8 text-center text-[#7E7E86] font-poppins">
                     No jobs found.
                   </td>
                 </tr>
               ) : (
                 currentJobs.map((job) => (
-                  <tr key={job.id} className="hover:bg-gray-50 transition-colors group relative">
-                    <td className="px-6 py-4">
-                      <p className="font-medium text-gray-900">{job.title}</p>
-                      <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
+                  <tr key={job.id} className="h-[80px] border-b border-[#F2F2F3] hover:bg-gray-50/50 transition-colors group relative">
+                    <td className="px-[12px]">
+                      <p className="text-[16px] font-medium text-[#434348] font-poppins">{job.title}</p>
+                      <div className="flex items-center gap-[8px] mt-1 text-[14px] text-[#7E7E86] font-poppins">
                         <span>{job.type}</span>
-                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                        <div className="w-[4px] h-[4px] bg-[#7E7E86] rounded-full"></div>
                         <span>{job.remaining}</span>
                       </div>
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-[12px]">
                       {job.status === 'Active' ? (
-                        <div className="flex items-center gap-2 text-green-600 font-medium text-sm">
-                          <CheckCircle2 className="w-4 h-4" />
+                        <div className="flex items-center gap-[10px] text-[#34A853] font-medium text-[16px] font-poppins">
+                          <CheckCircle2 className="w-[24px] h-[24px]" />
                           <span>Active</span>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2 text-red-500 font-medium text-sm">
-                          <AlertCircle className="w-4 h-4" />
+                        <div className="flex items-center gap-[10px] text-[#EB4335] font-medium text-[16px] font-poppins">
+                          <AlertCircle className="w-[24px] h-[24px]" />
                           <span>Expired</span>
                         </div>
                       )}
                     </td>
 
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-gray-600 text-sm">
-                        <Users className="w-5 h-5 text-gray-400" />
+                    <td className="px-[12px]">
+                      <div className="flex items-center gap-[10px] text-[#434348] text-[16px] font-poppins">
+                        <Users className="w-[24px] h-[24px] text-[#434348]" />
                         <span>{job.applications} Applications</span>
                       </div>
                     </td>
 
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex justify-end items-center gap-3 relative">
+                    <td className="px-[12px] text-right">
+                      <div className="flex justify-end items-center gap-[10px] pr-[20px] relative">
                         <Link href={`/jobs/${job.id}${sourceUrlParam ? `?source=${sourceUrlParam}` : ''}`}>
-                          <button className="px-4 py-2 bg-[#EBF1FF] text-indigo-600 rounded-md text-sm font-medium hover:bg-indigo-100 transition-colors">
+                          <button className="w-[146px] h-[48px] bg-[#E5E6FB] text-[#5D5FEF] rounded-full text-[18px] font-medium hover:bg-[#DEDFFB] transition-colors font-poppins flex items-center justify-center">
                             View Job
                           </button>
                         </Link>
                         
-                        {(currentEmployerId && currentEmployerId === job.employerId) && (
-                          <>
+                        {(currentEmployerId && currentEmployerId === job.employerId) ? (
+                          <div className="relative">
                             <button 
                               onClick={() => toggleDropdown(job.id)}
-                              className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors focus:outline-none"
+                              className="w-[48px] h-[48px] flex items-center justify-center text-[#434348] hover:bg-gray-100 rounded-[10px] transition-colors focus:outline-none"
                             >
-                              <MoreVertical className="w-5 h-5" />
+                              <MoreVertical className="w-[24px] h-[24px]" />
                             </button>
 
                             {activeDropdown === job.id && (
@@ -197,10 +207,10 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
                                   className="fixed inset-0 z-40" 
                                   onClick={() => setActiveDropdown(null)} 
                                 />
-                                <div className="absolute right-0 top-12 z-50 w-40 bg-white border border-gray-100 shadow-lg rounded-lg py-1 animate-in fade-in zoom-in-95 duration-100">
+                                <div className="absolute right-0 top-[52px] z-50 w-[204px] bg-white shadow-[0px_0px_12px_rgba(0,0,0,0.14)] rounded-[12px] p-[6px] flex flex-col gap-[4px] animate-in fade-in zoom-in-95 duration-100">
                                   <Link href={`/jobs/${job.id}/edit`}>
-                                    <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
-                                      <Edit className="w-4 h-4 text-gray-400" />
+                                    <button className="w-full h-[48px] flex items-center gap-[10px] px-[16px] text-[18px] font-medium text-[#434348] hover:bg-gray-50 rounded-[10px] transition-colors font-poppins">
+                                      <Edit className="w-[24px] h-[24px] text-[#434348]" />
                                       Edit Job
                                     </button>
                                   </Link>
@@ -209,15 +219,17 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
                                       setActiveDropdown(null);
                                       setJobToDelete(String(job.id));
                                     }}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
+                                    className="w-full h-[48px] flex items-center gap-[10px] px-[16px] text-[18px] font-medium text-[#EB4335] hover:bg-red-50 rounded-[12px] transition-colors font-poppins"
                                   >
-                                    <Trash2 className="w-4 h-4 text-red-400" />
+                                    <Trash2 className="w-[24px] h-[24px] text-[#EB4335]" />
                                     Delete Job
                                   </button>
                                 </div>
                               </>
                             )}
-                          </>
+                          </div>
+                        ) : (
+                          <div className="w-[48px] h-[48px]" />
                         )}
                       </div>
                     </td>
@@ -228,16 +240,16 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div className="border-t border-gray-100 px-6 py-4 flex items-center justify-between bg-gray-50/50">
-            <span className="text-sm text-gray-500 hidden sm:inline-block">
+        {(showPagination && totalPages > 1) && (
+          <div className="mt-6 flex items-center justify-between">
+            <span className="text-sm text-gray-500 font-poppins">
               Showing <span className="font-medium">{((currentPage - 1) * ITEMS_PER_PAGE) + 1}</span> to <span className="font-medium">{Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}</span> of <span className="font-medium">{totalItems}</span> results
             </span>
-            <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center gap-2">
               <button 
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="p-1 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 transition-colors"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -246,10 +258,10 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
                   <button
                     key={i}
                     onClick={() => { if (onPageChange) onPageChange(i + 1); }}
-                    className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium transition-colors ${
+                    className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium transition-colors font-poppins ${
                       currentPage === i + 1 
-                        ? 'bg-indigo-600 text-white' 
-                        : 'text-gray-500 hover:bg-gray-100 border border-transparent'
+                        ? 'bg-[#5D5FEF] text-white' 
+                        : 'text-gray-500 hover:bg-gray-100'
                     }`}
                   >
                     {i + 1}
@@ -259,7 +271,7 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
               <button 
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="p-1 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-1 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 transition-colors"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
