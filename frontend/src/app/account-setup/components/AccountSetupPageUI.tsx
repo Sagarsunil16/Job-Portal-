@@ -1,30 +1,46 @@
 import React from 'react';
-import { CenteredCardTemplate } from '../../../components/templates/CenteredCardTemplate';
 import { Logo } from '../../../components/atoms/Logo';
 import { DynamicForm } from '../../../components/organisms/DynamicForm';
 import { accountSetupConfig } from '../../../configs/formConfig';
 import { accountSetupSchema } from '../../../utils/validations/authValidation';
+import { useAppSelector } from '../../../hooks';
 
 interface AccountSetupPageUIProps {
   onSubmit: (data: Record<string, any>) => void;
 }
 
 export const AccountSetupPageUI: React.FC<AccountSetupPageUIProps> = ({ onSubmit }) => {
-  return (
-    <CenteredCardTemplate>
-      <div className="mb-8">
-        <Logo />
-      </div>
-      
-      <h1 className="text-[32px] font-semibold text-gray-900 mb-8">
-        Account Setup
-      </h1>
+  const pendingData = useAppSelector((state) => state.employer.pendingRegistrationData);
+  
+  // Pre-fill email from the signup data
+  const initialData = {
+    email: pendingData?.email || ''
+  };
 
-      <DynamicForm 
-        config={accountSetupConfig} 
-        validationSchema={accountSetupSchema}
-        onSubmit={onSubmit} 
-      />
-    </CenteredCardTemplate>
+  return (
+    <div className="min-h-screen bg-white font-poppins px-6 lg:px-0 overflow-x-hidden">
+      {/* Custom layout: Logo top left, content offset below */}
+      <div className="max-w-[1512px] mx-auto relative pt-[48px] lg:pl-[200px]">
+        
+        {/* Logo Section */}
+        <div className="mb-[40px]">
+          <Logo />
+        </div>
+
+        {/* Content Section */}
+        <div className="w-full max-w-[1112px] flex flex-col gap-[32px] pb-[100px] animate-in fade-in duration-500">
+          <h1 className="text-[32px] font-medium leading-[48px] text-[#434348]">
+            Account Setup
+          </h1>
+
+          <DynamicForm 
+            config={accountSetupConfig} 
+            validationSchema={accountSetupSchema}
+            onSubmit={onSubmit} 
+            initialData={initialData}
+          />
+        </div>
+      </div>
+    </div>
   );
 };

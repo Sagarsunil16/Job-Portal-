@@ -8,6 +8,8 @@ export interface FieldConfig {
   width?: 'full' | 'half'; // Deprecated in favor of colSpan on 3-col layouts, kept for legacy (Login/Signup)
   colSpan?: 1 | 2 | 3; // New 3-column grid width representation
   options?: { label: string; value: string }[]; // For selects
+  disabled?: boolean;
+  defaultValue?: any;
 }
 
 export interface FormSection {
@@ -62,7 +64,8 @@ export const accountSetupConfig: FormConfig = {
             { label: 'Private', value: 'private' },
             { label: 'Public', value: 'public' },
             { label: 'Startup', value: 'startup' },
-          ]
+          ],
+          defaultValue: 'private'
         },
         { 
           name: 'industryType', 
@@ -73,7 +76,8 @@ export const accountSetupConfig: FormConfig = {
             { label: 'Technology', value: 'tech' },
             { label: 'Finance', value: 'finance' },
             { label: 'Healthcare', value: 'health' },
-          ]
+          ],
+          defaultValue: 'tech'
         },
         { 
           name: 'teamSize', 
@@ -84,7 +88,8 @@ export const accountSetupConfig: FormConfig = {
             { label: '1-10', value: '1-10' },
             { label: '11-50', value: '11-50' },
             { label: '51-200', value: '51-200' },
-          ]
+          ],
+          defaultValue: '1-10'
         },
         { name: 'yearEstablished', controlType: 'input', label: 'Year of Establishment', colSpan: 1 },
         // Blank space in 3rd column handled implicitly by standard wrapping, but let's just let About Us drop to next line automatically by giving it colSpan 3.
@@ -96,7 +101,7 @@ export const accountSetupConfig: FormConfig = {
       fields: [
         { name: 'location', controlType: 'input', label: 'Location', colSpan: 1 },
         { name: 'contactNumber', controlType: 'phone', label: 'Contact Number', colSpan: 1 },
-        { name: 'email', controlType: 'input', type: 'email', label: 'Email', colSpan: 1 }
+        { name: 'email', controlType: 'input', type: 'email', label: 'Email', colSpan: 1, disabled: true }
       ]
     }
   ],

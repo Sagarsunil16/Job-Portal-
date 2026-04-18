@@ -16,6 +16,7 @@ export interface FormFieldProps {
   value: any;
   onChange: (e: any) => void;
   showEyeIcon?: boolean;
+  disabled?: boolean;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({ 
@@ -28,7 +29,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   value,
   onChange,
   showEyeIcon, 
-  placeholder
+  placeholder,
+  disabled
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const currentType = showEyeIcon && isVisible ? 'text' : type;
@@ -44,6 +46,7 @@ export const FormField: React.FC<FormFieldProps> = ({
             options={options}
             placeholder={placeholder}
             error={!!error}
+            disabled={disabled}
           />
         );
       case 'textarea':
@@ -54,6 +57,7 @@ export const FormField: React.FC<FormFieldProps> = ({
             onChange={onChange}
             placeholder={placeholder}
             error={!!error}
+            disabled={disabled}
           />
         );
       case 'phone':
@@ -83,6 +87,7 @@ export const FormField: React.FC<FormFieldProps> = ({
               onChange={onChange}
               placeholder={placeholder}
               error={!!error}
+              disabled={disabled}
             />
             {showEyeIcon && (
               <button
@@ -110,9 +115,9 @@ export const FormField: React.FC<FormFieldProps> = ({
 
   return (
     <div className={`text-left w-full ${controlType === 'file' ? 'mb-8' : 'mb-[16px]'}`}>
-      {label && <label className="block text-[16px] leading-[24px] font-poppins text-[#7E7E86] mb-[4px]">{label}</label>}
+      {label && <label className="block text-[16px] leading-[24px] font-poppins font-normal text-[#7E7E86] mb-[4px]">{label}</label>}
       {renderControl()}
-      {error && <p className="mt-[4px] text-[14px] leading-[21px] font-poppins text-[#EE1D52]">{error}</p>}
+      {error && <p className="mt-[4px] text-[14px] leading-[21px] font-poppins font-normal text-[#EE1D52]">{error}</p>}
     </div>
   );
 };

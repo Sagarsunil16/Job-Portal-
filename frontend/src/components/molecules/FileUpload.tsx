@@ -52,9 +52,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({ error, onChange, value }
 
   return (
     <div 
-      className={`relative w-full rounded-lg border-2 border-dashed p-8 text-center transition-colors
-        ${dragActive ? 'border-[#6366f1] bg-indigo-50' : 'border-gray-300 bg-white hover:bg-gray-50'}
-        ${error ? 'border-red-500' : ''}
+      className={`relative w-[332px] h-[160px] rounded-lg border-2 border-dashed transition-colors flex flex-col items-center justify-center p-4
+        ${dragActive ? 'border-[#5D5FEF] bg-indigo-50' : 'border-[#D7DADE] bg-white hover:bg-gray-50'}
+        ${error ? 'border-[#EE1D52]' : ''}
       `}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
@@ -70,26 +70,31 @@ export const FileUpload: React.FC<FileUploadProps> = ({ error, onChange, value }
       />
 
       {previewUrl ? (
-        <div className="flex flex-col items-center">
-          <img src={previewUrl} alt="Preview" className="h-24 w-auto object-contain rounded mb-4" />
+        <div className="flex flex-col items-center justify-center w-full h-full">
+          <img src={previewUrl} alt="Preview" className="h-16 w-auto object-contain rounded mb-2" />
           <button 
             type="button" 
             onClick={(e) => { e.stopPropagation(); if (onChange) onChange(null); }}
-            className="text-[13px] text-red-500 hover:text-red-700 font-medium"
+            className="text-[12px] text-red-500 hover:text-red-700 font-poppins font-medium"
           >
             Remove / Change Photo
           </button>
         </div>
       ) : (
-        <div className="flex flex-col items-center cursor-pointer" onClick={triggerSelect}>
-          <svg className="mb-3 w-8 h-8 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
-          </svg>
-          <p className="text-[14px] text-gray-600 mb-1">
-            <span className="font-semibold text-gray-900">Browse photo</span> or drop here
+        <div className="flex flex-col items-center cursor-pointer text-center" onClick={triggerSelect}>
+          {/* cloud-upload Icon Placeholder as per Figma */}
+          {/* High-fidelity cloud-upload Icon as per Figma */}
+          <div className="w-12 h-12 mb-2 flex items-center justify-center">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 16V9M12 9L15 12M12 9L9 12" stroke="#7E7E86" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M16 16.5C18.2091 16.5 20 14.7091 20 12.5C20 10.4357 18.4312 8.73602 16.4258 8.51731C15.9427 6.49504 14.1455 5 12 5C10.0355 5 8.35414 6.27301 7.74959 8.04374C5.59083 8.32832 4 10.222 4 12.5C4 14.7091 5.79086 16.5 8 16.5" stroke="#7E7E86" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <p className="font-poppins font-medium text-[12px] leading-[18px] text-[#434348]">
+            <span className="text-[#5D5FEF] font-medium">Browse photo</span> or drop here
           </p>
-          <p className="text-[12px] text-gray-400">
-            A photo larger than 400 pixels work best. <br/> Max file size 5 MB.
+          <p className="font-poppins font-normal text-[11px] leading-[16px] text-[#7E7E86] mt-1 max-w-[232px]">
+            A photo larger than 400 pixels work best. Max file size 5 MB.
           </p>
         </div>
       )}

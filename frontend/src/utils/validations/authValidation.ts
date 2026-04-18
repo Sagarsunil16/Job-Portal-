@@ -30,7 +30,7 @@ export const accountSetupSchema = yup.object().shape({
   organizationType: yup.string().required('Organization Type is required'),
   industryType: yup.string().required('Industry Type is required'),
   teamSize: yup.string().required('Team Size is required'),
-  yearEstablished: yup.string().required('Year of Establishment is required'),
+  yearEstablished: yup.string().required('Year of Establishment is required').matches(/^[0-9]{4}$/, 'Must be a 4-digit year'),
   aboutUs: yup.string().required('About Us is required').min(20, 'Please write at least 20 characters'),
   location: yup.string().required('Location is required'),
   contactNumber: yup.string().required('Contact Number is required'),

@@ -10,11 +10,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       <textarea
         ref={ref}
         {...props}
-        className={`w-full p-3 border rounded-lg text-[14px] text-black outline-none transition-colors min-h-[100px] resize-y
+        className={`w-full p-4 border rounded-[12px] text-[16px] font-poppins text-[#111111] bg-white outline-none transition-colors min-h-[100px] resize-y
         ${error 
-          ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
-          : 'border-gray-300 focus:border-[#6366f1] focus:ring-1 focus:ring-[#6366f1]'
+          ? 'border-[#EE1D52] focus:border-[#EE1D52] focus:ring-1 focus:ring-[#EE1D52]' 
+          : 'border-[rgba(126,126,134,0.35)] focus:border-[#5D5FEF] focus:ring-1 focus:ring-[#5D5FEF]'
         } 
+        ${props.disabled ? 'bg-gray-100 cursor-not-allowed opacity-75' : 'bg-white'}
         ${className}`}
       />
     );

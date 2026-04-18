@@ -14,19 +14,21 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
   ({ value, onChange, error, className = '', ...props }, ref) => {
     return (
       <div 
-        className={`w-full p-3 border rounded-lg text-[14px] text-black bg-white transition-colors flex items-center
+        className={`w-full h-[48px] px-[24px] border rounded-[12px] text-[16px] font-poppins text-[#111111] transition-all flex items-center
         ${error 
-          ? 'border-red-500 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500' 
-          : 'border-gray-300 focus-within:border-[#6366f1] focus-within:ring-1 focus-within:ring-[#6366f1]'
+          ? 'border-[#EE1D52] focus-within:border-[#EE1D52] focus-within:ring-1 focus-within:ring-[#EE1D52]' 
+          : 'border-[rgba(126,126,134,0.35)] focus-within:border-[#5D5FEF] focus-within:ring-1 focus-within:ring-[#5D5FEF]'
         } 
+        ${props.disabled ? 'bg-gray-100 cursor-not-allowed opacity-75' : 'bg-white'}
         ${className}`}
       >
         <PhoneInputLib
           placeholder="Enter phone number"
+          ref={ref as any}
           value={value}
-          onChange={onChange as any} // react-phone-number-input typing quirk
+          onChange={onChange as any} 
           defaultCountry="US"
-          className="w-full outline-none [&_input]:outline-none [&_input]:border-none [&_input]:bg-transparent"
+          className="w-full flex items-center outline-none [&_input]:outline-none [&_input]:border-none [&_input]:bg-transparent [&_input]:font-poppins [&_input]:text-[16px] [&_input]:text-[#111111] [&_.PhoneInputCountry]:border-r [&_.PhoneInputCountry]:border-[rgba(126,126,134,0.35)] [&_.PhoneInputCountry]:pr-3 [&_.PhoneInputCountry]:mr-3 [&_.PhoneInputCountrySelectArrow]:text-[#434348]"
           {...props}
         />
       </div>

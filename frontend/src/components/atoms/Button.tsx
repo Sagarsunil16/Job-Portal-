@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
     text: 'bg-transparent text-[#7E7E86] hover:text-[#434348] p-2 text-[14px] hover:bg-gray-50 rounded-lg whitespace-nowrap',
   };
 
-  const widthClass = fullWidth ? 'w-full' : 'flex-1';
+  const widthClass = fullWidth ? 'w-full' : 'w-fit';
 
   return (
     <button 

@@ -13,8 +13,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         className={`w-full h-[48px] px-[24px] border rounded-[12px] text-[16px] font-poppins text-[#111111] placeholder:text-gray-400 outline-none transition-all
         ${error 
           ? 'border-[#EE1D52] focus:border-[#EE1D52] focus:ring-1 focus:ring-[#EE1D52]' 
-          : 'border-[rgba(102,102,102,0.35)] focus:border-[#5D5FEF] focus:ring-1 focus:ring-[#5D5FEF]'
+          : 'border-[rgba(126,126,134,0.35)] focus:border-[#5D5FEF] focus:ring-1 focus:ring-[#5D5FEF]'
         } 
+        ${props.disabled ? 'bg-gray-100 cursor-not-allowed opacity-75' : 'bg-white'}
         ${className}`}
       />
     );
