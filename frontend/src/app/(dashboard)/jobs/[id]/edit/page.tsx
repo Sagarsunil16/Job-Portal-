@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ChevronDown } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { Button } from '../../../components/atoms/Button';
-import { jobValidationSchema } from './schema';
-import { createJob } from '../../../services/jobService';
-import { useAppSelector } from '../../../hooks';
+import { ChevronDown, CheckCircle2 } from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
+import { jobValidationSchema } from '../../../post-job/schema';
+import { getJobById, updateJob } from '../../../../../services/jobService';
 
-// Reusable micro-components for the form mapped for React Hook Form safely
+// Reusable micro-components mapped for React Hook Form safely
 const Label = ({ children }: { children: React.ReactNode }) => (
   <label className="block text-sm text-gray-700 font-medium mb-1.5">{children}</label>
 );
@@ -72,7 +70,6 @@ const InputWithAddon = React.forwardRef<HTMLInputElement, any>(({ placeholder, a
 ));
 InputWithAddon.displayName = 'InputWithAddon';
 
-// External Dictionary simulating API geography payload
 const COUNTRY_CITY_MAP: Record<string, string[]> = {
   "United States": ["New York", "San Francisco", "Austin", "Seattle", "Chicago"],
   "United Kingdom": ["London", "Manchester", "Birmingham", "Edinburgh"],
@@ -82,7 +79,7 @@ const COUNTRY_CITY_MAP: Record<string, string[]> = {
   "Germany": ["Berlin", "Munich", "Frankfurt", "Hamburg"],
 };
 
-export default function PostJobPage() {
+export default function EditJobPage() {
   const JOB_ROLES = ["UI/UX Designer", "Frontend Developer", "Backend Developer", "Fullstack Engineer", "Product Manager", "Data Scientist", "DevOps Engineer"];
   const SALARY_TYPES = ["Yearly", "Monthly", "Weekly", "Hourly"];
   const EDUCATION_LEVELS = ["High School", "Associate Degree", "Bachelor's Degree", "Master's Degree", "Doctorate"];
@@ -91,59 +88,142 @@ export default function PostJobPage() {
   const JOB_LEVELS = ["Entry Level", "Mid Level", "Senior Level", "Director", "Executive"];
   const COUNTRIES = Object.keys(COUNTRY_CITY_MAP);
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const params = useParams();
+  const router = useRouter();
+  const jobId = params.id as string;
+
+  const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({
     resolver: yupResolver(jobValidationSchema),
-    defaultValues: {
-      fullyRemote: false,
-      country: "",
-      city: "",
-      salaryType: "",
-      role: "",
-      educationLevel: "",
-      experienceLevel: "",
-      type: "",
-      jobLevel: ""
-    }
   });
 
   const selectedCountry = watch("country");
   const [availableCities, setAvailableCities] = useState<string[]>([]);
 
-  // Dependant Dropdown logic: Reset city when country changes
+  // Dependant Dropdown logic: Update cities when country changes
   useEffect(() => {
     if (selectedCountry && COUNTRY_CITY_MAP[selectedCountry]) {
       setAvailableCities(COUNTRY_CITY_MAP[selectedCountry]);
     } else {
       setAvailableCities([]);
     }
-    // Only reset if it's already interacted, technically form initiates with empty string
   }, [selectedCountry]);
 
-  const router = useRouter();
-  const { employerId } = useAppSelector((state) => state.employer);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  // Fetch initial data
+  useEffect(() => {
+    if (!jobId) return;
+
+    const fetchInitialData = async () => {
+      try {
+        setIsLoadingInitial(true);
+        const res = await getJobById(jobId);
+        
+        if (res.data.success) {
+          const job = res.data.data;
+          
+          let parsedDate = "";
+          if (job.expirationDate) {
+            parsedDate = new Date(job.expirationDate).toISOString().split('T')[0];
+          }
+
+          reset({
+            title: job.title || "",
+            tags: job.tags ? job.tags.join(', ') : "",
+            role: job.role || "",
+            minSalary: job.minSalary || "" as any,
+            maxSalary: job.maxSalary || "" as any,
+            salaryType: job.salaryType || "",
+            educationLevel: job.educationLevel || "",
+            experienceLevel: job.experienceLevel || "",
+            type: job.type || "",
+            jobLevel: job.jobLevel || "",
+            expirationDate: parsedDate,
+            country: job.country || "",
+            city: job.city || "",
+            fullyRemote: job.fullyRemote || false,
+            description: job.description || ""
+          } as any);
+
+          if (job.country && COUNTRY_CITY_MAP[job.country]) {
+             setAvailableCities(COUNTRY_CITY_MAP[job.country]);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load job details for editing", err);
+      } finally {
+        setIsLoadingInitial(false);
+      }
+    };
+
+    fetchInitialData();
+  }, [jobId, reset]);
 
   const onSubmit = async (data: any) => {
     try {
       setIsSubmitting(true);
       setSubmitError(null);
 
-      // Send all validated form fields — companyName is resolved by the backend from the employer profile
-      await createJob(data);
-      router.push('/dashboard/my-jobs');
+      // Submit through put request to specifically update the job
+      await updateJob(jobId, data);
+      
+      // Show confirmation modal
+      setShowSuccessModal(true);
     } catch (error: any) {
-      setSubmitError(error.response?.data?.message || 'Failed to post job. Please try again.');
+      setSubmitError(error.response?.data?.message || 'Failed to update job. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (isLoadingInitial) {
+    return (
+      <div className="w-full h-full flex items-center justify-center min-h-[60vh]">
+         <div className="animate-pulse flex flex-col items-center gap-4">
+           <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+           <p className="text-gray-500 font-medium">Loading form data...</p>
+         </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col w-full bg-white min-h-full pb-12">
-      <h1 className="text-xl font-bold text-gray-900 mb-6">Post a job</h1>
       
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-0 w-full animate-in fade-in">
+        
+        {/* Header mapping EXACTLY to Figma: Title on left, Save & Cancel buttons on right */}
+        <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-5 pt-1">
+          <h1 className="text-[20px] font-semibold text-gray-900 tracking-tight">Edit Job Details</h1>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => router.push(`/jobs/${jobId}`)}
+              className="px-6 py-2.5 bg-white text-gray-700 border border-gray-300 rounded-md text-[14px] font-medium hover:bg-gray-50 transition-colors disabled:opacity-75"
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit"
+              className="px-8 py-2.5 bg-indigo-600 text-white rounded-md text-[14px] shadow-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-75 disabled:cursor-wait"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+        </div>
+
+        {/* Global Error Banner if API fails */}
+        {submitError && (
+          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-3 mb-6">
+            {submitError}
+          </div>
+        )}
+
         {/* Row 1: Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
@@ -155,7 +235,7 @@ export default function PostJobPage() {
             <Input {...register("tags")} placeholder="e.g. Design, Figma (comma separated)" error={errors.tags?.message} />
           </div>
           <div>
-            <Label>Job Role / Industry</Label>
+            <Label>Job Role</Label>
             <Select {...register("role")} options={JOB_ROLES} error={errors.role?.message} />
           </div>
         </div>
@@ -218,14 +298,14 @@ export default function PostJobPage() {
         </div>
         
         {/* Checkbox */}
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 mt-2">
           <input 
             type="checkbox" 
             id="remote" 
             {...register("fullyRemote")}
-            className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
           />
-          <label htmlFor="remote" className="text-sm text-gray-700">Fully remote position</label>
+          <label htmlFor="remote" className="text-sm text-gray-700 cursor-pointer">Fully remote position</label>
         </div>
 
         {/* Section: Job Descriptions */}
@@ -234,27 +314,33 @@ export default function PostJobPage() {
           <textarea 
             {...register("description")}
             placeholder="Add job description"
-            className={`w-full h-[200px] p-4 border rounded-md text-sm text-gray-900 placeholder:text-gray-400 outline-none resize-none transition-colors ${errors.description ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-indigo-500'}`}
+            className={`w-full h-[240px] p-4 border rounded-md text-[14px] leading-relaxed text-gray-900 placeholder:text-gray-400 outline-none resize-y transition-colors ${errors.description ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-indigo-500'}`}
           />
           {errors.description && <span className="text-xs text-red-500 mt-1 block">{errors.description.message}</span>}
         </div>
 
-        {/* Submit */}
-        {submitError && (
-          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-3">
-            {submitError}
-          </div>
-        )}
-        <div>
-          <Button 
-            type="submit"
-            className="w-auto px-8"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Posting...' : 'Post Job'}
-          </Button>
-        </div>
       </form>
+
+      {/* Success Modal Overlay */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl p-8 flex flex-col items-center max-w-sm w-[90%] shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+              <CheckCircle2 className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-[20px] font-bold text-gray-900 mb-2">Successfully Updated!</h3>
+            <p className="text-[14px] leading-relaxed text-gray-500 text-center mb-8">
+              Your job details have been saved and successfully pushed live to the platform.
+            </p>
+            <button
+              onClick={() => router.push(`/jobs/${jobId}`)}
+              className="w-full py-3 bg-indigo-600 text-white rounded-lg text-[15px] font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+            >
+              Continue to Job View
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../../hooks';
 import { 
   Briefcase, 
   Users
 } from 'lucide-react';
-import { JobsTableWidget, JobData } from '../../components/organisms/JobsTableWidget';
-import { getAllJobs } from '../../services/jobService';
-import { JobDTO } from '../../domain/dtos/JobDTO';
+import { JobsTableWidget, JobData } from '../../../components/organisms/JobsTableWidget';
+import { getAllJobs } from '../../../services/jobService';
+import { JobDTO } from '../../../domain/dtos/JobDTO';
 
 // Helper: map API JobDTO to the shape JobsTableWidget expects
 const mapToJobData = (j: JobDTO): JobData => ({

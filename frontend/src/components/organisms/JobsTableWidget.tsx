@@ -176,7 +176,7 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
 
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end items-center gap-3 relative">
-                        <Link href={`/dashboard/jobs/${job.id}${sourceUrlParam ? `?source=${sourceUrlParam}` : ''}`}>
+                        <Link href={`/jobs/${job.id}${sourceUrlParam ? `?source=${sourceUrlParam}` : ''}`}>
                           <button className="px-4 py-2 bg-[#EBF1FF] text-indigo-600 rounded-md text-sm font-medium hover:bg-indigo-100 transition-colors">
                             View Job
                           </button>
@@ -198,7 +198,7 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
                                   onClick={() => setActiveDropdown(null)} 
                                 />
                                 <div className="absolute right-0 top-12 z-50 w-40 bg-white border border-gray-100 shadow-lg rounded-lg py-1 animate-in fade-in zoom-in-95 duration-100">
-                                  <Link href={`/dashboard/jobs/${job.id}/edit`}>
+                                  <Link href={`/jobs/${job.id}/edit`}>
                                     <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
                                       <Edit className="w-4 h-4 text-gray-400" />
                                       Edit Job

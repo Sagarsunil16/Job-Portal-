@@ -44,7 +44,7 @@ export const SetupSuccessUI: React.FC = () => {
                 View Dashboard
               </Button>
             </Link>
-            <Link href="/dashboard/post-job" className="w-full md:w-auto">
+            <Link href="/post-job" className="w-full md:w-auto">
               <Button 
                 variant="primary" 
                 className="!w-full md:!w-[229px] !h-[48px] !text-[18px] !font-medium !leading-[27px] !shadow-none"

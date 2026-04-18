@@ -18,12 +18,12 @@ import {
 
 const MENU_ITEMS = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Employers profile', href: '/dashboard/profile', icon: User },
-  { name: 'Post a Job', href: '/dashboard/post-job', icon: PlusCircle },
-  { name: 'My Jobs', href: '/dashboard/my-jobs', icon: Briefcase },
-  { name: 'Saved Candidate', href: '/dashboard/candidates', icon: Bookmark },
-  { name: 'Plans & Billing', href: '/dashboard/billing', icon: CreditCard },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+  { name: 'Employers profile', href: '/profile', icon: User },
+  { name: 'Post a Job', href: '/post-job', icon: PlusCircle },
+  { name: 'My Jobs', href: '/my-jobs', icon: Briefcase },
+  { name: 'Saved Candidate', href: '/candidates', icon: Bookmark },
+  { name: 'Plans & Billing', href: '/billing', icon: CreditCard },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -66,8 +66,8 @@ export const Sidebar: React.FC = () => {
           const isActive = 
             item.href === '/dashboard' 
               ? pathname === '/dashboard' || source === 'overview'
-              : item.href === '/dashboard/my-jobs'
-                ? pathname.startsWith('/dashboard/my-jobs') || (pathname.startsWith('/dashboard/jobs') && source !== 'overview')
+              : item.href === '/my-jobs'
+                ? pathname.startsWith('/my-jobs') || (pathname.startsWith('/jobs') && source !== 'overview')
                 : source === 'overview' ? false : pathname.startsWith(item.href);
           const Icon = item.icon;
           

@@ -51,7 +51,7 @@ export default function JobDetailsPage() {
     try {
       setIsDeleting(true);
       await deleteJob(jobId);
-      router.push('/dashboard/my-jobs');
+      router.push('/my-jobs');
     } catch (err) {
       console.error("Failed to delete job", err);
     } finally {
@@ -76,7 +76,7 @@ export default function JobDetailsPage() {
       <div className="p-8 text-center bg-gray-50 rounded-xl w-full border border-gray-100">
         <p className="text-gray-600 mb-4">The exact job could not be found or was removed.</p>
         <button 
-           onClick={() => router.push('/dashboard/my-jobs')}
+           onClick={() => router.push('/my-jobs')}
            className="px-6 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition"
         >
           Return to My Jobs
@@ -98,7 +98,7 @@ export default function JobDetailsPage() {
             >
               <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} />
             </button>
-            <Link href={`/dashboard/jobs/${job.id}/edit`}>
+            <Link href={`/jobs/${job.id}/edit`}>
               <button className="px-6 py-2.5 bg-indigo-600 text-white rounded-md text-[14px] shadow-sm font-medium hover:bg-indigo-700 transition-colors">
                 Edit Job
               </button>
