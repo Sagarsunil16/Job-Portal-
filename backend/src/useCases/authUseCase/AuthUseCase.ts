@@ -3,8 +3,8 @@ import { IAuthUseCase } from './IAuthUseCase';
 import { SignupWithSetupDto } from '../../domain/dtos/auth/SignupWithSetupDto';
 import { LoginRequestDto } from '../../domain/dtos/auth/LoginRequestDto';
 import { AuthResponseDto } from '../../domain/dtos/auth/AuthResponseDto';
-import { IEmployerRepository } from '../../infrastructure/repositories/IEmployerRepository';
-import { ITokenEngine } from '../../engine/tokenEngine/ITokenEngine';
+import { IEmployerRepository } from '../../repositories/employerRepository/IEmployerRepository';
+import { ITokenEngine } from '../../engines/tokenEngine/ITokenEngine';
 
 type AuthUseCaseConstructorParams = {
   EmployerRepository: IEmployerRepository;
@@ -75,6 +75,7 @@ export class AuthUseCase implements IAuthUseCase {
         employerId: newEmployer.id,
         accessToken,
         refreshToken,
+        logoUrl: newEmployer.logoUrl,
       },
     };
   }
@@ -116,6 +117,7 @@ export class AuthUseCase implements IAuthUseCase {
         employerId: employer.id,
         accessToken,
         refreshToken,
+        logoUrl: employer.logoUrl,
       },
     };
   }
@@ -146,6 +148,7 @@ export class AuthUseCase implements IAuthUseCase {
         employerId: employer.id,
         accessToken: newAccessToken,
         refreshToken, // Optionally rotate refresh token here as well
+        logoUrl: employer.logoUrl,
       },
     };
   }

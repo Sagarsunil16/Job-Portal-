@@ -13,7 +13,7 @@ const SignupWithSetupSchema = Yup.object().shape({
   organizationType: Yup.string().required('Organization Type is required'),
   industryType: Yup.string().required('Industry Type is required'),
   teamSize: Yup.string().required('Team Size is required'),
-  yearEstablished: Yup.string().required('Year Established is required'),
+  yearEstablished: Yup.string().required('Year Established is required').matches(/^[0-9]{4}$/, 'Must be a valid 4-digit year (e.g. 2012)'),
   aboutUs: Yup.string().required('About Us is required'),
   location: Yup.string().required('Location is required'),
   contactNumber: Yup.string().required('Contact Number is required'),

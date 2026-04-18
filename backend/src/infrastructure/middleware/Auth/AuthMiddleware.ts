@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ITokenEngine } from '../../../engine/tokenEngine/ITokenEngine';
+import { ITokenEngine } from '../../../engines/tokenEngine/ITokenEngine';
 import { TokenPayloadDto } from '../../../domain/dtos/auth/TokenPayloadDto';
 
 export interface IAuthMiddleware {

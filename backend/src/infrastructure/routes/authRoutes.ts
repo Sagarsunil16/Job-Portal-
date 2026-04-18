@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { AuthController } from '../../interfaces/controllers/AuthController';
+import { AuthController } from '../../controllers/AuthController';
 import { AuthUseCase } from '../../useCases/authUseCase/AuthUseCase';
-import { EmployerRepository } from '../repositories/EmployerRepository';
-import { TokenEngine } from '../../engine/tokenEngine/TokenEngine';
+import { EmployerRepository } from '../../repositories/employerRepository/EmployerRepository';
+import { TokenEngine } from '../../engines/tokenEngine/TokenEngine';
 import { AuthMiddleware } from '../middleware/Auth/AuthMiddleware';
 
 const authRouter = Router();

@@ -5,5 +5,6 @@ export interface AuthResponseDto {
     employerId: string;
     accessToken: string;
     refreshToken: string;
+    logoUrl?: string | undefined;
   };
 }
