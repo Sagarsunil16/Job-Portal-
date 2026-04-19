@@ -59,6 +59,14 @@ export default function handleErrors(
   res: Response,
   next: NextFunction
 ): void {
+  // Log the error for backend debugging (visible in Render logs)
+  console.error("[GlobalErrorHandler] Error captured:", {
+    message: err.message,
+    stack: err.stack,
+    path: req.path,
+    method: req.method
+  });
+
   // If it's a known ApiError
   if (err instanceof ApiError) {
     const responseCode = getResponseCode(err.errorCode);

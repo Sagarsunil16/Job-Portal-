@@ -33,7 +33,5 @@ export const signupWithSetup = (registrationData: Omit<SignupDTO, 'confirmPasswo
     }
   });
 
-  return api.post('/auth/signup-with-setup', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  return api.post('/auth/signup-with-setup', formData);
 };
