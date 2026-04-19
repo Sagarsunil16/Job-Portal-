@@ -17,7 +17,7 @@ export interface CreateJobDTO {
   fullyRemote: boolean;
   description: string;
   employerId: string;
-  companyName: string;
+  companyName?: string;
 }
 
 export interface UpdateJobDTO {

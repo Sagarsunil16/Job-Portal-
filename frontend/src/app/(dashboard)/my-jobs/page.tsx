@@ -60,8 +60,11 @@ export default function MyJobsPage() {
   }, [page, debouncedSearch]);
 
   return (
-    <div className="flex flex-col gap-6 w-full pb-12">
-      <h1 className="text-[28px] font-semibold text-gray-900">My Jobs</h1>
+    <div className="flex flex-col gap-[32px] w-full px-4 md:px-8 pb-12 animate-in fade-in">
+      <div className="flex flex-col">
+        <h1 className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">My Jobs</h1>
+      </div>
+      
       <JobsTableWidget 
         jobs={jobs} 
         isLoading={isLoading} 

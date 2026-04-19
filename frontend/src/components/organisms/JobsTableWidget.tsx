@@ -123,26 +123,26 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
 
       <div className="w-full">
         <div className="w-full overflow-x-auto lg:overflow-visible">
-          <table className="w-full text-left border-collapse min-w-[1128px]">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="h-[40px] bg-[#F2F2F3] rounded-[8px]">
-                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins rounded-l-[8px] w-[458px]">Jobs</th>
-                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins w-[200px]">Status</th>
-                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins w-[242px]">Applications</th>
-                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins rounded-r-[8px] w-[228px] text-right pr-[40px]">Actions</th>
+              <tr className="h-[40px] bg-[#F2F2F3] rounded-[8px] flex items-center justify-between">
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins rounded-l-[8px] flex-grow basis-[458px] flex items-center h-full">Jobs</th>
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins basis-[200px] flex items-center h-full">Status</th>
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins basis-[242px] flex items-center h-full">Applications</th>
+                <th className="px-[12px] text-[16px] font-medium text-[#7E7E86] font-poppins rounded-r-[8px] basis-[228px] flex items-center justify-start h-full">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="h-[80px] border-b border-[#F2F2F3]">
-                    <td className="px-[12px]">
+                  <tr key={i} className="h-[80px] border-b border-[#F2F2F3] flex items-center justify-between">
+                    <td className="px-[12px] flex-grow basis-[458px]">
                       <div className="h-4 bg-gray-100 rounded animate-pulse w-48 mb-2" />
                       <div className="h-3 bg-gray-50 rounded animate-pulse w-32" />
                     </td>
-                    <td className="px-[12px]"><div className="h-4 bg-gray-100 rounded animate-pulse w-16" /></td>
-                    <td className="px-[12px]"><div className="h-4 bg-gray-100 rounded animate-pulse w-24" /></td>
-                    <td className="px-[12px] text-right pr-[40px]"><div className="h-10 bg-gray-100 rounded-full animate-pulse w-[146px] inline-block mr-[58px]" /></td>
+                    <td className="px-[12px] basis-[200px]"><div className="h-4 bg-gray-100 rounded animate-pulse w-16" /></td>
+                    <td className="px-[12px] basis-[242px]"><div className="h-4 bg-gray-100 rounded animate-pulse w-24" /></td>
+                    <td className="px-[12px] basis-[228px] flex items-center justify-start"><div className="h-10 bg-gray-100 rounded-full animate-pulse w-[146px]" /></td>
                   </tr>
                 ))
               ) : currentJobs.length === 0 ? (
@@ -153,8 +153,8 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
                 </tr>
               ) : (
                 currentJobs.map((job) => (
-                  <tr key={job.id} className="h-[80px] border-b border-[#F2F2F3] hover:bg-gray-50/50 transition-colors group relative">
-                    <td className="px-[12px]">
+                  <tr key={job.id} className="h-[80px] border-b border-[#F2F2F3] hover:bg-gray-50/50 transition-colors group relative flex items-center justify-between">
+                    <td className="px-[12px] flex-grow basis-[458px] flex flex-col justify-center">
                       <p className="text-[16px] font-medium text-[#434348] font-poppins">{job.title}</p>
                       <div className="flex items-center gap-[8px] mt-1 text-[14px] text-[#7E7E86] font-poppins">
                         <span>{job.type}</span>
@@ -163,7 +163,7 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
                       </div>
                     </td>
 
-                    <td className="px-[12px]">
+                    <td className="px-[12px] basis-[200px] flex items-center">
                       {job.status === 'Active' ? (
                         <div className="flex items-center gap-[10px] text-[#34A853] font-medium text-[16px] font-poppins">
                           <CheckCircle2 className="w-[24px] h-[24px]" />
@@ -177,15 +177,15 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
                       )}
                     </td>
 
-                    <td className="px-[12px]">
+                    <td className="px-[12px] basis-[242px] flex items-center">
                       <div className="flex items-center gap-[10px] text-[#434348] text-[16px] font-poppins">
                         <Users className="w-[24px] h-[24px] text-[#434348]" />
                         <span>{job.applications} Applications</span>
                       </div>
                     </td>
 
-                    <td className="px-[12px] text-right">
-                      <div className="flex justify-end items-center gap-[10px] pr-[20px] relative">
+                    <td className="px-[12px] basis-[228px] flex items-center justify-start">
+                      <div className="flex items-center gap-[10px] relative">
                         <Link href={`/jobs/${job.id}${sourceUrlParam ? `?source=${sourceUrlParam}` : ''}`}>
                           <button className="w-[146px] h-[48px] bg-[#E5E6FB] text-[#5D5FEF] rounded-full text-[18px] font-medium hover:bg-[#DEDFFB] transition-colors font-poppins flex items-center justify-center">
                             View Job
