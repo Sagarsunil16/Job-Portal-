@@ -240,7 +240,7 @@ export const JobsTableWidget: React.FC<JobsTableWidgetProps> = ({
           </table>
         </div>
 
-        {(showPagination && totalPages > 1) && (
+        {(showPagination && totalItems > 0) && (
           <div className="mt-6 flex items-center justify-between">
             <span className="text-sm text-gray-500 font-poppins">
               Showing <span className="font-medium">{((currentPage - 1) * ITEMS_PER_PAGE) + 1}</span> to <span className="font-medium">{Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}</span> of <span className="font-medium">{totalItems}</span> results

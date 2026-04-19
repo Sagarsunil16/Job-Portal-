@@ -17,6 +17,23 @@ export const LoginPageUI: React.FC<LoginPageUIProps> = ({ onLoginSubmit }) => {
     /* Form Wrapper: Absolute positioning on desktop as per Figma */
     <div className="xl:absolute xl:left-[80px] xl:top-[224px] w-full max-w-[682px] flex flex-col gap-6 sm:gap-[32px] animate-in fade-in duration-500">
       
+      {/* Demo Credentials Section - Made more minute and moved to top */}
+      <div className="py-2 px-3 bg-indigo-50/40 border border-indigo-100/50 rounded-[8px] flex items-center justify-between w-fit animate-in fade-in duration-700">
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] font-bold text-[#5D5FEF] uppercase tracking-[0.5px] font-poppins shrink-0">Demo:</span>
+          <div className="flex items-center gap-4">
+             <div className="flex items-center gap-1.5">
+                <span className="text-[12px] text-[#7E7E86] font-poppins">Email:</span>
+                <code className="text-[12px] font-semibold text-[#434348] font-poppins select-all">bluemax@gmail.com</code>
+             </div>
+             <div className="flex items-center gap-1.5">
+                <span className="text-[12px] text-[#7E7E86] font-poppins">Pass:</span>
+                <code className="text-[12px] font-semibold text-[#434348] font-poppins select-all">Sagar123#</code>
+             </div>
+          </div>
+        </div>
+      </div>
+
       {/* Header Section */}
       <div className="flex flex-col gap-[2px]">
         <h2 className="text-2xl sm:text-[32px] font-medium leading-tight sm:leading-[48px] text-[#434348] font-poppins flex items-center">

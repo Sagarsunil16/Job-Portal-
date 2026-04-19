@@ -111,7 +111,7 @@ export default function DashboardPage() {
           sourceUrlParam="overview"
           currentEmployerId={employerId || undefined}
           showSearch={true}
-          showPagination={false}
+          showPagination={true}
         />
       </div>
     </div>

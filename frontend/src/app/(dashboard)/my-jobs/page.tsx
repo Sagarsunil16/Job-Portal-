@@ -75,6 +75,7 @@ export default function MyJobsPage() {
         totalItems={totalItems}
         onPageChange={setPage}
         currentEmployerId={employerId || undefined}
+        showPagination={true}
       />
     </div>
   );
