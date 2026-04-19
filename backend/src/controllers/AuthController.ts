@@ -1,43 +1,41 @@
 import { Request, Response, NextFunction } from 'express';
 import { IAuthUseCase } from '../useCases/authUseCase/IAuthUseCase';
+import { IAuthMiddleware } from '../infrastructure/middleware/Auth/AuthMiddleware';
 import SignupWithSetupSchema from '../infrastructure/validation/auth/SignupWithSetupSchema';
 import LoginSchema from '../infrastructure/validation/auth/LoginSchema';
+import { ApiError } from '../domain/errors/ApiError';
+import { ErrorCode } from '../domain/enums/ErrorCode';
 
 type AuthControllerConstructorParams = {
   AuthUseCase: IAuthUseCase;
+  AuthMiddleware: IAuthMiddleware;
 };
 
 export class AuthController {
   private authUseCase: IAuthUseCase;
+  private auth: IAuthMiddleware;
 
-  constructor({ AuthUseCase }: AuthControllerConstructorParams) {
+  constructor({ AuthUseCase, AuthMiddleware }: AuthControllerConstructorParams) {
     this.authUseCase = AuthUseCase;
+    this.auth = AuthMiddleware;
   }
 
   async signupWithSetup(req: Request, res: Response, next: NextFunction) {
     try {
-      // Accept file as req.file (from multipart/form-data, e.g. via frontend FormData)
       const file = req.file && req.file.buffer ? { buffer: req.file.buffer, originalname: req.file.originalname, mimetype: req.file.mimetype, size: req.file.size } : undefined;
       const payload = { ...req.body };
 
-      // Only DTO validation here, business/file validation in use case
       await SignupWithSetupSchema.validate({ ...payload }, { abortEarly: false });
 
       const result = await this.authUseCase.signupWithSetup(payload, file);
 
       if (!result.status) {
-        res.status(400).json(result);
-        return;
+        throw new ApiError(result.message || 'Signup failed', ErrorCode.ValidationError);
       }
       res.status(201).json(result);
     } catch (error: any) {
       if (error.name === 'ValidationError') {
-        res.status(400).json({
-          status: false,
-          message: 'Validation failed',
-          errors: error.errors,
-        });
-        return;
+        return next(new ApiError('Validation failed', ErrorCode.ValidationError, error.errors));
       }
       next(error);
     }
@@ -49,18 +47,12 @@ export class AuthController {
       const result = await this.authUseCase.login(req.body);
 
       if (!result.status) {
-         res.status(401).json(result);
-         return;
+        throw new ApiError(result.message || 'Login failed', ErrorCode.InvalidCredentials);
       }
       res.status(200).json(result);
     } catch (error: any) {
       if (error.name === 'ValidationError') {
-         res.status(400).json({
-          status: false,
-          message: 'Validation failed',
-          errors: error.errors,
-        });
-        return;
+        return next(new ApiError('Validation failed', ErrorCode.ValidationError, error.errors));
       }
       next(error);
     }
@@ -70,14 +62,12 @@ export class AuthController {
     try {
       const { refreshToken } = req.body;
       if (!refreshToken) {
-         res.status(400).json({ status: false, message: 'Refresh token is required' });
-         return;
+        throw new ApiError('Refresh token is required', ErrorCode.PayloadError);
       }
 
       const result = await this.authUseCase.refreshToken(refreshToken);
       if (!result.status) {
-         res.status(401).json(result);
-         return;
+        throw new ApiError(result.message || 'Refresh failed', ErrorCode.Unauthorized);
       }
 
       res.status(200).json(result);
@@ -87,19 +77,18 @@ export class AuthController {
   }
 
   async logout(req: Request, res: Response, next: NextFunction) {
-    try {
-      // Assuming AuthMiddleware attaches the user payload to req
-      const employerId = (req as any).user?.employerId;
-      
-      if (!employerId) {
-         res.status(400).json({ status: false, message: 'Not authenticated' });
-         return;
-      }
+    (await this.auth.verify())(req, res, async () => {
+      try {
+        const employerId = req.user?.employerId;
+        if (!employerId) {
+          throw new ApiError('Not authenticated', ErrorCode.Unauthorized);
+        }
 
-      await this.authUseCase.logout(employerId);
-      res.status(200).json({ status: true, message: 'Logged out successfully' });
-    } catch (error) {
-      next(error);
-    }
+        await this.authUseCase.logout(employerId);
+        res.status(200).json({ status: true, message: 'Logged out successfully' });
+      } catch (error) {
+        next(error);
+      }
+    });
   }
 }

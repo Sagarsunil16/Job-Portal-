@@ -16,15 +16,17 @@ const jobEngine = new JobManagementEngine({
   EmployerRepository: employerRepository 
 });
 const jobUseCase = new JobManagementUseCase({ JobEngine: jobEngine });
-const jobController = new JobController({ JobUseCase: jobUseCase });
 const authMiddleware = new AuthMiddleware({ TokenEngine: new TokenEngine() });
-const auth = authMiddleware.verify();
+const jobController = new JobController({ 
+  JobUseCase: jobUseCase,
+  AuthMiddleware: authMiddleware
+});
 
-router.post('/', auth, jobController.createJob);
+router.post('/', jobController.createJob);
 router.get('/', jobController.getJobs);
-router.get('/my-jobs', auth, jobController.getMyJobs);
+router.get('/my-jobs', jobController.getMyJobs);
 router.get('/:id', jobController.getJobById);
-router.put('/:id', auth, jobController.updateJob);
-router.delete('/:id', auth, jobController.deleteJob);
+router.put('/:id', jobController.updateJob);
+router.delete('/:id', jobController.deleteJob);
 
 export default router;

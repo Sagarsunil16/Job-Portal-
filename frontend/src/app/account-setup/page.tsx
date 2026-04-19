@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { AccountSetupPageUI } from './components/AccountSetupPageUI';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { loginSuccess, clearPendingRegistration } from '../../store/slices/employerSlice';
@@ -14,7 +15,7 @@ export default function AccountSetupPage() {
 
   const handleSetupSubmit = async (data: Record<string, any>) => {
     if (!pendingRegistrationData) {
-      alert("Registration data lost. Please start over.");
+      toast.error("Registration data lost. Please start over.");
       router.push('/signup');
       return;
     }
@@ -28,12 +29,13 @@ export default function AccountSetupPage() {
         localStorage.setItem('refreshToken', refreshToken);
         dispatch(loginSuccess({ employerId, accessToken, logoUrl }));
         
+        toast.success('Registration complete!');
         router.push('/account-setup/success');
       } else {
-        alert(response.data.message || 'Setup failed');
+        toast.error(response.data.message || 'Setup failed');
       }
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Server error during setup');
+      toast.error(error.response?.data?.message || 'Server error during setup');
       console.error(error);
     }
   };

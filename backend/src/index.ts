@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './infrastructure/database/connection';
 import jobRoutes from './infrastructure/routes/jobRoutes';
 import authRoutes from './infrastructure/routes/authRoutes';
+import handleErrors from './infrastructure/middleware/ErrorHandlerMiddleware';
 
 dotenv.config();
 
@@ -23,6 +24,9 @@ app.use('/api/jobs', jobRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend is running' });
 });
+
+// Centralized Error Handling Middleware (must be last)
+app.use(handleErrors);
 
 const startServer = async () => {
   try {

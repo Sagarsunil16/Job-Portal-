@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { Button } from '../../../components/atoms/Button';
 import { jobValidationSchema } from './schema';
 import { createJob } from '../../../services/jobService';
@@ -121,16 +122,16 @@ export default function PostJobPage() {
 
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const onSubmit = async (data: any) => {
     try {
       setIsSubmitting(true);
-      setSubmitError(null);
       await createJob(data);
+      toast.success('Job posted successfully!');
       router.push('/my-jobs');
     } catch (error: any) {
-      setSubmitError(error.response?.data?.message || 'Failed to post job. Please try again.');
+      const message = error.response?.data?.message || 'Failed to post job. Please try again.';
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -253,11 +254,6 @@ export default function PostJobPage() {
 
         {/* Submit */}
         <div className="flex flex-col gap-4">
-          {submitError && (
-            <div className="text-[14px] text-red-600 bg-red-50 border border-red-200 rounded-[12px] px-4 py-3 font-poppins">
-              {submitError}
-            </div>
-          )}
           <div>
             <button 
               type="submit"

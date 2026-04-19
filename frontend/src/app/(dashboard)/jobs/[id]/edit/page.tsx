@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChevronDown, CheckCircle2 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { jobValidationSchema } from '../../../post-job/schema';
 import { getJobById, updateJob } from '../../../../../services/jobService';
 
@@ -110,8 +111,6 @@ export default function EditJobPage() {
 
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({
     resolver: yupResolver(jobValidationSchema),
@@ -181,15 +180,14 @@ export default function EditJobPage() {
   const onSubmit = async (data: any) => {
     try {
       setIsSubmitting(true);
-      setSubmitError(null);
 
       // Submit through put request to specifically update the job
       await updateJob(jobId, data);
       
-      // Show confirmation modal
-      setShowSuccessModal(true);
+      toast.success('Job updated successfully!');
+      router.push(`/jobs/${jobId}`);
     } catch (error: any) {
-      setSubmitError(error.response?.data?.message || 'Failed to update job. Please try again.');
+      toast.error(error.response?.data?.message || 'Failed to update job. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -236,12 +234,6 @@ export default function EditJobPage() {
           </div>
         </div>
 
-        {/* Global Error Banner if API fails */}
-        {submitError && (
-          <div className="text-[14px] text-[#EE1D52] bg-[#EE1D52]/5 border border-[#EE1D52]/20 rounded-[12px] px-4 py-3 font-poppins animate-in slide-in-from-top-2">
-            {submitError}
-          </div>
-        )}
 
         {/* Section 1: Basic Info - 3 Columns */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[16px]">
@@ -349,26 +341,6 @@ export default function EditJobPage() {
 
       </form>
 
-      {/* Success Modal Overlay */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl p-8 flex flex-col items-center max-w-sm w-[90%] shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
-              <CheckCircle2 className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-[20px] font-bold text-gray-900 mb-2">Successfully Updated!</h3>
-            <p className="text-[14px] leading-relaxed text-gray-500 text-center mb-8">
-              Your job details have been saved and successfully pushed live to the platform.
-            </p>
-            <button
-              onClick={() => router.push(`/jobs/${jobId}`)}
-              className="w-full py-3 bg-indigo-600 text-white rounded-lg text-[15px] font-medium hover:bg-indigo-700 transition-colors shadow-sm"
-            >
-              Continue to Job View
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

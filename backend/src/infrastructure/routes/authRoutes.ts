@@ -21,12 +21,13 @@ const authUseCase = new AuthUseCase({
   TokenEngine: tokenEngine,
 });
 
-const authController = new AuthController({
-  AuthUseCase: authUseCase,
-});
-
 const authMiddleware = new AuthMiddleware({
   TokenEngine: tokenEngine,
+});
+
+const authController = new AuthController({
+  AuthUseCase: authUseCase,
+  AuthMiddleware: authMiddleware
 });
 
 // Routes
@@ -34,11 +35,7 @@ authRouter.post('/signup-with-setup', upload.single('logo'), authController.sign
 authRouter.post('/login', authController.login.bind(authController));
 authRouter.post('/refresh-token', authController.refreshToken.bind(authController));
 
-// Protected route example - Logout
-authRouter.post(
-  '/logout',
-  authMiddleware.verify(),
-  authController.logout.bind(authController)
-);
+// Protected route handled internally by controller
+authRouter.post('/logout', authController.logout.bind(authController));
 
 export default authRouter;
