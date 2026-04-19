@@ -11,8 +11,24 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS Configuration: Supports local dev, production URL, and Vercel preview subdomains
+const allowedOrigins = process.env.FRONTEND_URL?.split(',') || ['http://localhost:3000'];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = allowedOrigins.some(ao => ao.trim() === origin) || 
+                      origin.endsWith('.vercel.app') || 
+                      origin === 'http://localhost:3000';
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
