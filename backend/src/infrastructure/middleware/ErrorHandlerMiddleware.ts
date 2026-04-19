@@ -2,12 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../../domain/errors/ApiError";
 import { ErrorCode } from "../../domain/enums/ErrorCode";
 import ErrorResponseDto from "../../domain/dtos/ErrorResponseDto";
+import { MulterError } from "multer";
 
 /**
  * Sanitizes error messages to prevent exposing technical stack details to users.
  */
 function sanitizeErrorMessage(errorMessage: string): string {
-  // Check for common technical indicators
+  // 1. Check for database/technical indicators that MUST be hidden
   if (
     errorMessage.includes("duplicate key value violates unique constraint") ||
     errorMessage.includes("MongoError") ||
@@ -17,6 +18,7 @@ function sanitizeErrorMessage(errorMessage: string): string {
     return "Unable to process request due to a database service error";
   }
 
+  // 2. Check for generic catch-all indicators (stack traces, raw errors)
   if (
     errorMessage.includes("Error:") ||
     errorMessage.includes("\n    at ") ||
@@ -54,31 +56,47 @@ export function getResponseCode(errorCode: ErrorCode): number {
 }
 
 export default function handleErrors(
-  err: Error,
+  err: any, // Use any for library-specific checks
   req: Request,
   res: Response,
   next: NextFunction
 ): void {
-  // Log the error for backend debugging (visible in Render logs)
+  // Log the error for backend debugging
   console.error("[GlobalErrorHandler] Error captured:", {
+    name: err.name,
     message: err.message,
+    code: err.code, // Useful for Multer
     stack: err.stack,
     path: req.path,
-    method: req.method
   });
 
-  // If it's a known ApiError
-  if (err instanceof ApiError) {
-    const responseCode = getResponseCode(err.errorCode);
-    const sanitizedMessage = sanitizeErrorMessage(err.message);
+  // Handle Multer-specific errors (file upload limits, etc.)
+  if (err instanceof MulterError) {
+    let message = err.message;
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      message = 'File too large. Max size allowed is 2MB.';
+    }
     
-    res
-      .status(responseCode)
-      .json(new ErrorResponseDto(sanitizedMessage, err.errorCode, err.errorDetails));
+    res.status(400).json(new ErrorResponseDto(message, ErrorCode.PayloadError));
     return;
   }
 
-  // Handle generic errors (fallback)
+  // If it's a known ApiError, we TRUST the message (no sanitization unless it matches DB rules)
+  if (err instanceof ApiError) {
+    const responseCode = getResponseCode(err.errorCode);
+    
+    // Only sanitize if it explicitly contains DB strings (highly unlikely for ApiError)
+    const finalMessage = err.message.includes("MongoError") || err.message.includes("MongooseError")
+      ? sanitizeErrorMessage(err.message)
+      : err.message;
+    
+    res
+      .status(responseCode)
+      .json(new ErrorResponseDto(finalMessage, err.errorCode, err.errorDetails));
+    return;
+  }
+
+  // Handle generic errors (fallback with full sanitization)
   const sanitizedMessage = sanitizeErrorMessage(err.message);
   res.status(500).json(new ErrorResponseDto(sanitizedMessage, ErrorCode.InternalError));
 }
