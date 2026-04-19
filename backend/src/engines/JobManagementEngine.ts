@@ -4,8 +4,8 @@ import { JobRepository } from '../repositories/jobRepository/JobRepository';
 export class JobManagementEngine {
   private jobRepository: JobRepository;
 
-  constructor() {
-    this.jobRepository = new JobRepository();
+  constructor({ JobRepository }: { JobRepository: JobRepository }) {
+    this.jobRepository = JobRepository;
   }
 
   async createJob(data: CreateJobDTO): Promise<JobDTO> {

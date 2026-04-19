@@ -127,7 +127,7 @@ backend/
 │               ├── SignupSchema.ts         # Yup schema for basic signup
 │               └── SignupWithSetupSchema.ts # Yup schema for full employer registration
 │
-├── uploads/                            # Multer destination for company logo uploads
+├── uploads/                            # (Deprecated) Previously used for local logo uploads
 ├── .env.example                        # Template for required environment variables
 ├── package.json
 └── tsconfig.json
@@ -145,7 +145,7 @@ backend/
 | **JSON Web Tokens (JWT)** | Stateless authentication — access + refresh token pattern |
 | **bcryptjs** | Password hashing with salt rounds |
 | **Yup** | Schema-based request validation |
-| **Multer** | Multipart form handling for company logo uploads |
+| **Cloudinary** | Cloud image hosting for company logo uploads |
 | **dotenv** | Environment variable management |
 | **cors** | Cross-Origin Resource Sharing — restricted to frontend origin |
 
@@ -416,7 +416,7 @@ Controller: fetches job from DB by req.params.id
 | `aboutUs` | String | ✅ | |
 | `location` | String | ✅ | |
 | `contactNumber` | String | ✅ | |
-| `logoUrl` | String | ❌ | Path to uploaded file via Multer |
+| `logoUrl` | String | ✅ | Cloudinary URL for uploaded logo |
 
 ### Job
 | Field | Type | Required | Notes |

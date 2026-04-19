@@ -1,30 +1,23 @@
 import { Request, Response } from 'express';
-import { JobManagementEngine } from '../engines/JobManagementEngine';
-import { EmployerRepository } from '../repositories/employerRepository/EmployerRepository';
+import { JobManagementUseCase } from '../useCases/jobUseCase/JobManagementUseCase';
 
 export class JobController {
-  private jobEngine: JobManagementEngine;
-  private employerRepository: EmployerRepository;
+  private jobUseCase: JobManagementUseCase;
 
-  constructor() {
-    this.jobEngine = new JobManagementEngine();
-    this.employerRepository = new EmployerRepository();
+  constructor({ JobUseCase }: { JobUseCase: JobManagementUseCase }) {
+    this.jobUseCase = JobUseCase;
   }
 
   createJob = async (req: Request, res: Response): Promise<void> => {
     try {
-      // employerId is securely extracted from the JWT payload — never trusted from body
       const employerId = req.user?.employerId;
       if (!employerId) {
         res.status(401).json({ success: false, message: 'Unauthorized' });
         return;
       }
 
-      // Look up companyName from the employer's profile — never trust it from the request body
-      const employer = await this.employerRepository.findById(employerId);
-      const companyName = employer?.companyName || 'Unknown Company';
-
-      const job = await this.jobEngine.createJob({ ...req.body, employerId, companyName });
+      // The use case handles companyName lookup and job creation
+      const job = await this.jobUseCase.createJob({ ...req.body, employerId });
       res.status(201).json({ success: true, data: job });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });
@@ -37,7 +30,7 @@ export class JobController {
       const limit = parseInt(req.query.limit as string) || 7;
       const search = req.query.search as string;
 
-      const result = await this.jobEngine.getAllJobs({}, page, limit, search);
+      const result = await this.jobUseCase.getAllJobs({}, page, limit, search);
 
       res.status(200).json({ 
         success: true, 
@@ -66,7 +59,7 @@ export class JobController {
       const limit = parseInt(req.query.limit as string) || 7;
       const search = req.query.search as string;
 
-      const result = await this.jobEngine.getJobsByEmployer(employerId, page, limit, search);
+      const result = await this.jobUseCase.getJobsByEmployer(employerId, page, limit, search);
 
       res.status(200).json({ 
         success: true, 
@@ -85,7 +78,7 @@ export class JobController {
 
   getJobById = async (req: Request, res: Response): Promise<void> => {
     try {
-      const job = await this.jobEngine.getJobById(req.params.id as string);
+      const job = await this.jobUseCase.getJobById(req.params.id as string);
       if (!job) {
         res.status(404).json({ success: false, message: 'Job not found' });
         return;
@@ -104,18 +97,7 @@ export class JobController {
         return;
       }
 
-      // Authorization: verify the job belongs to the requesting employer
-      const existingJob = await this.jobEngine.getJobById(req.params.id as string);
-      if (!existingJob) {
-        res.status(404).json({ success: false, message: 'Job not found' });
-        return;
-      }
-      if (existingJob.employerId !== employerId) {
-        res.status(403).json({ success: false, message: 'Forbidden: You do not own this job' });
-        return;
-      }
-
-      const updatedJob = await this.jobEngine.updateJob(req.params.id as string, req.body);
+      const updatedJob = await this.jobUseCase.updateJob(req.params.id as string, req.body, employerId);
       res.status(200).json({ success: true, data: updatedJob });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });
@@ -130,18 +112,7 @@ export class JobController {
         return;
       }
 
-      // Authorization: verify the job belongs to the requesting employer
-      const existingJob = await this.jobEngine.getJobById(req.params.id as string);
-      if (!existingJob) {
-        res.status(404).json({ success: false, message: 'Job not found' });
-        return;
-      }
-      if (existingJob.employerId !== employerId) {
-        res.status(403).json({ success: false, message: 'Forbidden: You do not own this job' });
-        return;
-      }
-
-      await this.jobEngine.deleteJob(req.params.id as string);
+      await this.jobUseCase.deleteJob(req.params.id as string, employerId);
       res.status(200).json({ success: true, message: 'Job deleted successfully' });
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message });

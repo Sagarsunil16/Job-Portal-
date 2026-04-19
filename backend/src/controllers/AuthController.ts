@@ -16,22 +16,23 @@ export class AuthController {
 
   async signupWithSetup(req: Request, res: Response, next: NextFunction) {
     try {
-      // Future-proof: if multer processes the file, `req.file` holds logo.
-      // We pass the file path or just proceed with body
-      const payload = { ...req.body, logoUrl: req.file ? req.file.path : null };
+      // Accept file as req.file (from multipart/form-data, e.g. via frontend FormData)
+      const file = req.file && req.file.buffer ? { buffer: req.file.buffer, originalname: req.file.originalname, mimetype: req.file.mimetype, size: req.file.size } : undefined;
+      const payload = { ...req.body };
 
-      await SignupWithSetupSchema.validate(payload, { abortEarly: false });
-      
-      const result = await this.authUseCase.signupWithSetup(payload);
-      
+      // Only DTO validation here, business/file validation in use case
+      await SignupWithSetupSchema.validate({ ...payload }, { abortEarly: false });
+
+      const result = await this.authUseCase.signupWithSetup(payload, file);
+
       if (!result.status) {
-         res.status(400).json(result);
-         return;
+        res.status(400).json(result);
+        return;
       }
       res.status(201).json(result);
     } catch (error: any) {
       if (error.name === 'ValidationError') {
-         res.status(400).json({
+        res.status(400).json({
           status: false,
           message: 'Validation failed',
           errors: error.errors,

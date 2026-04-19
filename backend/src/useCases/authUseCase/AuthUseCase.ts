@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { IAuthUseCase } from './IAuthUseCase';
 import { SignupWithSetupDto } from '../../domain/dtos/auth/SignupWithSetupDto';
+import { uploadLogoToCloudinary } from '../../engines/cloudinaryEngine';
 import { LoginRequestDto } from '../../domain/dtos/auth/LoginRequestDto';
 import { AuthResponseDto } from '../../domain/dtos/auth/AuthResponseDto';
 import { IEmployerRepository } from '../../repositories/employerRepository/IEmployerRepository';
@@ -20,7 +21,8 @@ export class AuthUseCase implements IAuthUseCase {
     this.tokenEngine = TokenEngine;
   }
 
-  async signupWithSetup(data: SignupWithSetupDto): Promise<AuthResponseDto> {
+  async signupWithSetup(data: SignupWithSetupDto, file?: { buffer: Buffer; originalname: string; mimetype?: string; size?: number }): Promise<AuthResponseDto> {
+    // Check for existing user
     const existingUser = await this.employerRepository.findByEmailOrUsername(
       data.email
     ) || await this.employerRepository.findByEmailOrUsername(data.username);
@@ -32,8 +34,30 @@ export class AuthUseCase implements IAuthUseCase {
       };
     }
 
+    // File validation (moved from controller)
+    let logoUrl = data.logoUrl;
+    if (file && file.buffer) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+      if (!allowedTypes.includes(file.mimetype || '')) {
+        return {
+          status: false,
+          message: 'Invalid file type. Only images are allowed.',
+        };
+      }
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      if ((file.size || 0) > maxSize) {
+        return {
+          status: false,
+          message: 'File too large. Max size is 2MB.',
+        };
+      }
+      // Upload to Cloudinary
+      const filename = file.originalname || `logo_${Date.now()}`;
+      const uploadResult = await uploadLogoToCloudinary(file.buffer, filename);
+      logoUrl = uploadResult.url;
+    }
+
     const salt = await bcrypt.genSalt(10);
-    // Use fallback in case password isn't caught by DTO typings immediately (guaranteed by Yup)
     const passwordHash = await bcrypt.hash(data.password || 'temp', salt);
 
     const newEmployerPayload: any = {
@@ -49,11 +73,8 @@ export class AuthUseCase implements IAuthUseCase {
       aboutUs: data.aboutUs,
       location: data.location,
       contactNumber: data.contactNumber,
+      logoUrl,
     };
-
-    if (data.logoUrl) {
-      newEmployerPayload.logoUrl = data.logoUrl;
-    }
 
     const newEmployer = await this.employerRepository.create(newEmployerPayload);
 

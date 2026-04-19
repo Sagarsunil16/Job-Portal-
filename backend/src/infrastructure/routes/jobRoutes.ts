@@ -1,10 +1,17 @@
 import { Router } from 'express';
 import { JobController } from '../../controllers/JobController';
+import { JobManagementUseCase } from '../../useCases/jobUseCase/JobManagementUseCase';
+import { JobManagementEngine } from '../../engines/JobManagementEngine';
+import { JobRepository } from '../../repositories/jobRepository/JobRepository';
 import { AuthMiddleware } from '../middleware/Auth/AuthMiddleware';
 import { TokenEngine } from '../../engines/tokenEngine/TokenEngine';
 
 const router = Router();
-const jobController = new JobController();
+// IoC wiring according to architecture rules
+const jobRepository = new JobRepository();
+const jobEngine = new JobManagementEngine({ JobRepository: jobRepository });
+const jobUseCase = new JobManagementUseCase({ JobEngine: jobEngine });
+const jobController = new JobController({ JobUseCase: jobUseCase });
 const authMiddleware = new AuthMiddleware({ TokenEngine: new TokenEngine() });
 const auth = authMiddleware.verify();
 

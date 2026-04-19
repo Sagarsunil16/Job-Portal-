@@ -1,6 +1,9 @@
 import { Router } from 'express';
-import multer from 'multer';
 import { AuthController } from '../../controllers/AuthController';
+import multer from 'multer';
+
+// Multer memory storage for logo upload
+const upload = multer({ storage: multer.memoryStorage() });
 import { AuthUseCase } from '../../useCases/authUseCase/AuthUseCase';
 import { EmployerRepository } from '../../repositories/employerRepository/EmployerRepository';
 import { TokenEngine } from '../../engines/tokenEngine/TokenEngine';
@@ -8,8 +11,6 @@ import { AuthMiddleware } from '../middleware/Auth/AuthMiddleware';
 
 const authRouter = Router();
 
-// Configure Multer for Logo Uploads
-const upload = multer({ dest: 'uploads/logos/' });
 
 // IoC Initialization for Auth Module (Dependency Injection)
 const tokenEngine = new TokenEngine();

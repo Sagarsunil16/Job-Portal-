@@ -8,64 +8,80 @@ import { useRouter, useParams } from 'next/navigation';
 import { jobValidationSchema } from '../../../post-job/schema';
 import { getJobById, updateJob } from '../../../../../services/jobService';
 
-// Reusable micro-components mapped for React Hook Form safely
-const Label = ({ children }: { children: React.ReactNode }) => (
-  <label className="block text-sm text-gray-700 font-medium mb-1.5">{children}</label>
+// Reusable micro-components with FIGMA spec: Poppins, #7E7E86 labels, #111111 inputs, 12px radius, 48px height
+const Label = ({ children, htmlFor }: { children: React.ReactNode; htmlFor?: string }) => (
+  <label htmlFor={htmlFor} className="block text-[16px] font-normal text-[#7E7E86] font-poppins leading-[24px] mb-[4px]">
+    {children}
+  </label>
 );
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-[17px] font-semibold text-gray-900 mt-8 mb-4">{children}</h2>
+  <h2 className="text-[20px] font-medium text-[#434348] font-poppins leading-[30px] mt-[16px] mb-[16px]">
+    {children}
+  </h2>
 );
 
 const Input = React.forwardRef<HTMLInputElement, any>(({ placeholder, error, type = "text", ...props }, ref) => (
-  <div className="w-full flex-col">
+  <div className="flex flex-col w-full gap-[4px]">
     <input 
       ref={ref}
       type={type}
       placeholder={placeholder}
-      className={`w-full h-11 px-4 py-2 border rounded-md text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-colors ${error ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-indigo-500'}`}
+      className={`w-full h-[48px] px-[16px] border rounded-[12px] text-[16px] text-[#111111] font-poppins placeholder:text-[#7E7E86]/50 outline-none transition-all duration-200 bg-white
+        ${error 
+          ? 'border-[#EE1D52] focus:border-[#EE1D52] bg-red-50/10' 
+          : 'border-[#7E7E86]/30 focus:border-[#5D5FEF] focus:ring-1 focus:ring-[#5D5FEF]/20'
+        }`}
       {...props}
     />
-    {error && <span className="text-xs text-red-500 mt-1 block">{error}</span>}
+    {error && <span className="text-[14px] font-normal text-[#EE1D52] font-poppins leading-[21px]">{error}</span>}
   </div>
 ));
 Input.displayName = 'Input';
 
 const Select = React.forwardRef<HTMLSelectElement, any>(({ placeholder = "Select", options = [], error, ...props }, ref) => (
-  <div className="w-full flex-col">
+  <div className="flex flex-col w-full gap-[4px]">
     <div className="relative w-full">
       <select 
         ref={ref}
         {...props}
-        className={`w-full h-11 pl-4 pr-10 py-2 border rounded-md text-sm outline-none appearance-none transition-colors bg-white ${error ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-indigo-500'} text-gray-900`}
+        className={`w-full h-[48px] pl-[16px] pr-[40px] border rounded-[12px] text-[16px] font-poppins outline-none appearance-none transition-all duration-200 bg-white
+          ${error 
+            ? 'border-[#EE1D52] focus:border-[#EE1D52] bg-red-50/10' 
+            : 'border-[#7E7E86]/30 focus:border-[#5D5FEF] focus:ring-1 focus:ring-[#5D5FEF]/20'
+          } ${props.value === "" ? 'text-[#7E7E86]/50' : 'text-[#434348]'}`}
       >
         <option value="" disabled>{placeholder}</option>
         {options.map((opt: string, i: number) => (
-          <option key={i} value={opt}>{opt}</option>
+          <option key={i} value={opt} className="text-[#434348] py-2">{opt}</option>
         ))}
       </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+      <ChevronDown className="absolute right-[16px] top-1/2 -translate-y-1/2 w-[20px] h-[20px] text-[#434348] pointer-events-none" />
     </div>
-    {error && <span className="text-xs text-red-500 mt-1 block">{error}</span>}
+    {error && <span className="text-[14px] font-normal text-[#EE1D52] font-poppins leading-[21px]">{error}</span>}
   </div>
 ));
 Select.displayName = 'Select';
 
 const InputWithAddon = React.forwardRef<HTMLInputElement, any>(({ placeholder, addon, error, ...props }, ref) => (
-  <div className="w-full flex-col">
-    <div className={`flex w-full h-11 border rounded-md overflow-hidden transition-colors ${error ? 'border-red-500 focus-within:border-red-500' : 'border-gray-200 focus-within:border-indigo-500'}`}>
+  <div className="flex flex-col w-full gap-[4px]">
+    <div className={`flex w-full h-[48px] border rounded-[12px] bg-white overflow-hidden transition-all duration-200 
+      ${error 
+        ? 'border-[#EE1D52] focus-within:border-[#EE1D52] bg-red-50/10' 
+        : 'border-[#7E7E86]/30 focus-within:border-[#5D5FEF] focus-within:ring-1 focus-within:ring-[#5D5FEF]/20'
+      }`}>
       <input 
         ref={ref}
         type="number"
         placeholder={placeholder}
-        className="flex-1 px-4 py-2 text-sm text-gray-900 placeholder:text-gray-400 outline-none"
+        className="flex-1 px-[16px] text-[16px] text-[#111111] font-poppins placeholder:text-[#7E7E86]/50 outline-none h-full bg-transparent"
         {...props}
       />
-      <div className="flex items-center justify-center bg-gray-50 border-l border-gray-200 px-4 text-sm text-gray-500 font-medium">
+      <div className="flex items-center justify-center bg-[#F2F2F3] border-l border-[#7E7E86]/30 px-[16px] text-[16px] text-[#7E7E86] font-normal font-poppins h-full">
         {addon}
       </div>
     </div>
-    {error && <span className="text-xs text-red-500 mt-1 block">{error}</span>}
+    {error && <span className="text-[14px] font-normal text-[#EE1D52] font-poppins leading-[21px]">{error}</span>}
   </div>
 ));
 InputWithAddon.displayName = 'InputWithAddon';
@@ -191,25 +207,28 @@ export default function EditJobPage() {
   }
 
   return (
-    <div className="flex flex-col w-full bg-white min-h-full pb-12">
+    <div className="flex flex-col w-full bg-white min-h-full gap-[32px] pt-0 pb-12 animate-in fade-in">
       
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-0 w-full animate-in fade-in">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[32px] w-full px-4 md:px-8">
         
-        {/* Header mapping EXACTLY to Figma: Title on left, Save & Cancel buttons on right */}
-        <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-5 pt-1">
-          <h1 className="text-[20px] font-semibold text-gray-900 tracking-tight">Edit Job Details</h1>
-          <div className="flex items-center gap-3">
+        {/* Header Section: Title on left, Action Buttons on right */}
+        <div className="flex flex-row justify-between items-center w-full h-[48px]">
+          <div className="flex flex-col">
+            <h1 className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">Edit Job Details</h1>
+          </div>
+          
+          <div className="flex items-center gap-[12px]">
             <button
               type="button"
               onClick={() => router.push(`/jobs/${jobId}`)}
-              className="px-6 py-2.5 bg-white text-gray-700 border border-gray-300 rounded-md text-[14px] font-medium hover:bg-gray-50 transition-colors disabled:opacity-75"
+              className="flex items-center justify-center h-[48px] px-[32px] bg-white text-[#434348] border border-[#7E7E86]/30 rounded-[32px] text-[18px] font-medium hover:bg-gray-50 transition-colors font-poppins"
               disabled={isSubmitting}
             >
               Cancel
             </button>
             <button 
               type="submit"
-              className="px-8 py-2.5 bg-indigo-600 text-white rounded-md text-[14px] shadow-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-75 disabled:cursor-wait"
+              className="flex items-center justify-center h-[48px] px-[32px] bg-[#5D5FEF] text-white rounded-[32px] text-[18px] font-medium hover:bg-[#5D5FEF]/90 transition-colors disabled:opacity-75 disabled:cursor-wait font-poppins shadow-sm"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Saving...' : 'Save'}
@@ -219,15 +238,15 @@ export default function EditJobPage() {
 
         {/* Global Error Banner if API fails */}
         {submitError && (
-          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-3 mb-6">
+          <div className="text-[14px] text-[#EE1D52] bg-[#EE1D52]/5 border border-[#EE1D52]/20 rounded-[12px] px-4 py-3 font-poppins animate-in slide-in-from-top-2">
             {submitError}
           </div>
         )}
 
-        {/* Row 1: Basic Info */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Section 1: Basic Info - 3 Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-[16px]">
           <div>
-            <Label>Job Titles</Label>
+            <Label>Job Tiles</Label>
             <Input {...register("title")} placeholder="e.g. Senior UX Designer" error={errors.title?.message} />
           </div>
           <div>
@@ -240,83 +259,92 @@ export default function EditJobPage() {
           </div>
         </div>
 
-        {/* Section: Salary */}
-        <SectionTitle>Salary</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <Label>Min Salary</Label>
-            <InputWithAddon {...register("minSalary")} addon="USD" placeholder="e.g. 50000" error={errors.minSalary?.message} />
-          </div>
-          <div>
-            <Label>Max Salary</Label>
-            <InputWithAddon {...register("maxSalary")} addon="USD" placeholder="e.g. 80000" error={errors.maxSalary?.message} />
-          </div>
-          <div>
-            <Label>Salary Type</Label>
-            <Select {...register("salaryType")} options={SALARY_TYPES} error={errors.salaryType?.message} />
-          </div>
-        </div>
-
-        {/* Section: Advance Information */}
-        <SectionTitle>Advance Information</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div>
-            <Label>Education Level</Label>
-            <Select {...register("educationLevel")} options={EDUCATION_LEVELS} error={errors.educationLevel?.message} />
-          </div>
-          <div>
-            <Label>Experience Level</Label>
-            <Select {...register("experienceLevel")} options={EXPERIENCE_LEVELS} error={errors.experienceLevel?.message} />
-          </div>
-          <div>
-            <Label>Job Type</Label>
-            <Select {...register("type")} options={JOB_TYPES} error={errors.type?.message} />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <Label>Job Level</Label>
-            <Select {...register("jobLevel")} options={JOB_LEVELS} error={errors.jobLevel?.message} />
-          </div>
-          <div>
-            <Label>Expiration Date</Label>
-            <Input {...register("expirationDate")} type="date" error={errors.expirationDate?.message} />
+        {/* Section 2: Salary - 3 Columns */}
+        <div className="flex flex-col gap-[16px]">
+          <SectionTitle>Salary</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[16px]">
+            <div>
+              <Label>Min Salary</Label>
+              <InputWithAddon {...register("minSalary")} addon="USD" placeholder="e.g. 50000" error={errors.minSalary?.message} />
+            </div>
+            <div>
+              <Label>Max Salary</Label>
+              <InputWithAddon {...register("maxSalary")} addon="USD" placeholder="e.g. 80000" error={errors.maxSalary?.message} />
+            </div>
+            <div>
+              <Label>Salary Type</Label>
+              <Select {...register("salaryType")} options={SALARY_TYPES} error={errors.salaryType?.message} />
+            </div>
           </div>
         </div>
 
-        {/* Section: Location */}
-        <SectionTitle>Location</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-          <div>
-            <Label>Country</Label>
-            <Select {...register("country")} options={COUNTRIES} error={errors.country?.message} />
+        {/* Section 3: Advance Information - Multi-row Grid */}
+        <div className="flex flex-col gap-[16px]">
+          <SectionTitle>Advance Information</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[16px]">
+            <div>
+              <Label>Education Level</Label>
+              <Select {...register("educationLevel")} options={EDUCATION_LEVELS} error={errors.educationLevel?.message} />
+            </div>
+            <div>
+              <Label>Experience Level</Label>
+              <Select {...register("experienceLevel")} options={EXPERIENCE_LEVELS} error={errors.experienceLevel?.message} />
+            </div>
+            <div>
+              <Label>Job Type</Label>
+              <Select {...register("type")} options={JOB_TYPES} error={errors.type?.message} />
+            </div>
+            <div>
+              <Label>Job Level</Label>
+              <Select {...register("jobLevel")} options={JOB_LEVELS} error={errors.jobLevel?.message} />
+            </div>
+            <div>
+              <Label>Expiration Date</Label>
+              <Input {...register("expirationDate")} type="date" error={errors.expirationDate?.message} />
+            </div>
           </div>
-          <div>
-            <Label>City</Label>
-            <Select {...register("city")} options={availableCities} placeholder={selectedCountry ? "Select City" : "Select Country first"} error={errors.city?.message} disabled={!selectedCountry} />
-          </div>
-        </div>
-        
-        {/* Checkbox */}
-        <div className="flex items-center gap-2 mb-2 mt-2">
-          <input 
-            type="checkbox" 
-            id="remote" 
-            {...register("fullyRemote")}
-            className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
-          />
-          <label htmlFor="remote" className="text-sm text-gray-700 cursor-pointer">Fully remote position</label>
         </div>
 
-        {/* Section: Job Descriptions */}
-        <SectionTitle>Job Descriptions</SectionTitle>
-        <div className="w-full mb-8">
-          <textarea 
-            {...register("description")}
-            placeholder="Add job description"
-            className={`w-full h-[240px] p-4 border rounded-md text-[14px] leading-relaxed text-gray-900 placeholder:text-gray-400 outline-none resize-y transition-colors ${errors.description ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-indigo-500'}`}
-          />
-          {errors.description && <span className="text-xs text-red-500 mt-1 block">{errors.description.message}</span>}
+        {/* Section 4: Location */}
+        <div className="flex flex-col gap-[16px]">
+          <SectionTitle>Location</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-[16px]">
+            <div>
+              <Label>Country</Label>
+              <Select {...register("country")} options={COUNTRIES} error={errors.country?.message} />
+            </div>
+            <div>
+              <Label>City</Label>
+              <Select {...register("city")} options={availableCities} placeholder={selectedCountry ? "Select City" : "Select Country first"} error={errors.city?.message} disabled={!selectedCountry} />
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-[12px] mt-[8px]">
+            <input 
+              type="checkbox" 
+              id="remote" 
+              {...register("fullyRemote")}
+              className="w-[20px] h-[20px] rounded-[6px] border-[#7E7E86]/30 text-[#5D5FEF] focus:ring-[#5D5FEF] cursor-pointer accent-[#5D5FEF]"
+            />
+            <label htmlFor="remote" className="text-[16px] text-[#434348] font-normal font-poppins cursor-pointer">Fully remote position</label>
+          </div>
+        </div>
+
+        {/* Section 5: Job Descriptions */}
+        <div className="flex flex-col gap-[16px]">
+          <SectionTitle>Job Descriptions</SectionTitle>
+          <div className="w-full">
+            <textarea 
+              {...register("description")}
+              placeholder="Add job description"
+              className={`w-full h-[300px] p-[24px] border rounded-[12px] text-[16px] leading-[24px] text-[#434348] font-normal font-poppins placeholder:text-[#7E7E86]/50 outline-none resize-none transition-all duration-200
+                ${errors.description 
+                  ? 'border-[#EE1D52] focus:border-[#EE1D52] bg-red-50/10' 
+                  : 'border-[#7E7E86]/30 focus:border-[#5D5FEF] focus:ring-1 focus:ring-[#5D5FEF]/20'
+                }`}
+            />
+            {errors.description && <span className="text-[14px] font-normal text-[#EE1D52] font-poppins leading-[21px] mt-[4px] block">{errors.description.message}</span>}
+          </div>
         </div>
 
       </form>
