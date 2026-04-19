@@ -127,7 +127,7 @@ backend/
 │               ├── SignupSchema.ts         # Yup schema for basic signup
 │               └── SignupWithSetupSchema.ts # Yup schema for full employer registration
 │
-├── uploads/                            # (Deprecated) Previously used for local logo uploads
+├── uploads/                            # (Deprecated) — logo uploads now handled by Cloudinary
 ├── .env.example                        # Template for required environment variables
 ├── package.json
 └── tsconfig.json
