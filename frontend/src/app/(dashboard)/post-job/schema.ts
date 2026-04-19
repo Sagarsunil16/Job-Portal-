@@ -22,10 +22,9 @@ export const jobValidationSchema = yup.object().shape({
   expirationDate: yup
     .date()
     .transform((value, originalValue) => {
-      // Allow parsing from custom format if needed, but native date picker will return valid date string
-      return new Date(originalValue);
+      return originalValue ? new Date(originalValue) : value;
     })
-    .min(new Date(), 'Expiration date must be in the future')
+    .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Expiration date cannot be in the past')
     .required('Expiration date is required'),
   country: yup.string().required('Country is required'),
   city: yup.string().required('City is required'),
