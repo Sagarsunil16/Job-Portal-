@@ -94,7 +94,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ error, onChange, value }
             <span className="text-[#5D5FEF] font-medium">Browse photo</span> or drop here
           </p>
           <p className="font-poppins font-normal text-[11px] leading-[16px] text-[#7E7E86] mt-1 max-w-[232px]">
-            A photo larger than 400 pixels work best. Max file size 5 MB.
+            A photo larger than 400 pixels work best. Max file size 2 MB.
           </p>
         </div>
       )}
