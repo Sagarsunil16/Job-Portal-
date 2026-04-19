@@ -453,6 +453,6 @@ Controller: fetches job from DB by req.params.id
 
 <div align="center">
 
-Built with ❤️ following Clean Architecture principles — *maintainable, testable, and production-ready.*
+Built with following Clean Architecture principles — *maintainable, testable, and production-ready.*
 
 </div>

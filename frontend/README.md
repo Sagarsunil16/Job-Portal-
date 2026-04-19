@@ -419,6 +419,6 @@ All UI is built strictly against the provided **Figma design specifications**.
 
 <div align="center">
 
-Built with ❤️ following Atomic Design principles and Figma pixel-perfect specifications.
+Built with following Atomic Design principles and Figma pixel-perfect specifications.
 
 </div>

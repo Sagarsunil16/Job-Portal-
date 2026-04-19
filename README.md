@@ -164,6 +164,4 @@ JobPilot utilizes a **Service-Based Data Pattern**:
 ### 📖 Detailed Sub-Documentation
 [Frontend README](./frontend/README.md) | [Backend README](./backend/README.md)
 
-Built with ❤️ for a production-ready Job Portal experience.
-
 </div>
