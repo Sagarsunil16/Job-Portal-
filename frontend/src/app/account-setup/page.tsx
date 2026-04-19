@@ -23,10 +23,10 @@ export default function AccountSetupPage() {
       const response = await signupWithSetup(pendingRegistrationData, data as AccountSetupDTO);
 
       if (response.data.status) {
-        const { employerId, accessToken, refreshToken } = response.data.data;
+        const { employerId, accessToken, refreshToken, logoUrl } = response.data.data;
         
         localStorage.setItem('refreshToken', refreshToken);
-        dispatch(loginSuccess({ employerId, accessToken }));
+        dispatch(loginSuccess({ employerId, accessToken, logoUrl }));
         
         router.push('/account-setup/success');
       } else {

@@ -65,7 +65,7 @@ export default function JobDetailsPage() {
       <div className="w-full h-[60vh] flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center gap-4">
           <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <p className="text-gray-500 font-medium">Loading Job Details...</p>
+          <p className="text-gray-500 font-medium font-poppins">Loading Job Details...</p>
         </div>
       </div>
     );
@@ -74,10 +74,10 @@ export default function JobDetailsPage() {
   if (!job) {
     return (
       <div className="p-8 text-center bg-gray-50 rounded-xl w-full border border-gray-100">
-        <p className="text-gray-600 mb-4">The exact job could not be found or was removed.</p>
+        <p className="text-gray-600 mb-4 font-poppins">The exact job could not be found or was removed.</p>
         <button 
            onClick={() => router.push('/my-jobs')}
-           className="px-6 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition"
+           className="px-6 py-2 bg-[#5D5FEF] text-white rounded-md text-sm hover:bg-[#5D5FEF]/90 transition font-poppins"
         >
           Return to My Jobs
         </button>
@@ -86,20 +86,23 @@ export default function JobDetailsPage() {
   }
 
   return (
-    <div className="flex flex-col w-full h-full pb-12 animate-in fade-in">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
-        <h1 className="text-[22px] font-semibold text-gray-900 tracking-tight">Job Details</h1>
+    <div className="flex flex-col w-full bg-white min-h-full gap-[32px] animate-in fade-in pt-0 pb-12">
+      {/* Header & CTA Section */}
+      <div className="flex flex-row justify-between items-center w-full h-[48px] px-4 md:px-8">
+        <div className="flex flex-col">
+          <h1 className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">Job Details</h1>
+        </div>
+        
         {job.employerId === employerId && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-[8px]">
             <button 
               onClick={() => setShowDeleteModal(true)}
-              className="flex flex-col items-center justify-center p-2.5 text-red-400 bg-red-50/50 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors border border-transparent"
+              className="flex items-center justify-center w-[48px] h-[48px] text-[#EB4335] hover:bg-red-50 transition-colors"
             >
-              <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} />
+              <Trash2 className="w-[24px] h-[24px]" strokeWidth={1.5} />
             </button>
             <Link href={`/jobs/${job.id}/edit`}>
-              <button className="px-6 py-2.5 bg-indigo-600 text-white rounded-md text-[14px] shadow-sm font-medium hover:bg-indigo-700 transition-colors">
+              <button className="flex items-center justify-center h-[48px] px-[32px] bg-[#5D5FEF] text-white rounded-[32px] text-[18px] font-medium hover:bg-[#5D5FEF]/90 transition-colors font-poppins">
                 Edit Job
               </button>
             </Link>
@@ -107,96 +110,102 @@ export default function JobDetailsPage() {
         )}
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Main Content Split Layout */}
+      <div className="flex flex-col lg:flex-row gap-[40px] w-full px-4 md:px-8">
         
-        {/* Left Col: Job Description */}
-        <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
-          <h2 className="text-[22px] font-semibold text-gray-900 tracking-tight">{job.title}</h2>
+        {/* Left Column (Job Description) - Flexible growth */}
+        <div className="lg:flex-[0.65] flex flex-col gap-[16px] w-full">
+          <h2 className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">{job.title}</h2>
           
-          {/* Pre-wrap will preserve formatting, newlines, and list bullets properly typed inside standard textarea */}
-          <div className="text-[15px] leading-relaxed text-gray-600 space-y-4 whitespace-pre-wrap">
+          <div className="text-[16px] leading-[24px] text-[#434348] font-normal font-poppins whitespace-pre-wrap">
             {job.description}
           </div>
         </div>
 
-        {/* Right Col: Cards */}
-        <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-5">
+        {/* Right Column (Overview Cards) - Flexible growth */}
+        <div className="lg:flex-[0.35] flex flex-col gap-[16px] w-full">
           
-          {/* Salary & Location Card */}
-          <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm flex divide-x divide-gray-100 items-center justify-between w-full">
-            
-            <div className="flex flex-col items-center justify-center w-1/2 px-2 gap-1.5">
-              <span className="text-[13px] text-gray-500 font-medium tracking-wide">Salary (USD)</span>
-              <span className="text-[17px] font-bold text-[#0BA02C]">
-                ${job.minSalary.toLocaleString()} - ${job.maxSalary.toLocaleString()}
-              </span>
-              <span className="text-[12px] text-gray-400">{job.salaryType.toLowerCase()} salary</span>
-            </div>
-
-            <div className="flex flex-col items-center justify-center w-1/2 px-2 gap-1.5">
-              <div className="mb-0.5">
-                <Map className="w-5 h-5 text-indigo-400" strokeWidth={1.5} />
+          {/* Card 1: Salary & Location */}
+          <div className="flex flex-row items-center border border-[#E5E5E6] rounded-[16px] p-[24px] w-full gap-[12px]">
+            {/* Salary Section */}
+            <div className="flex-1 flex flex-col items-center justify-center gap-[8px]">
+              <span className="text-[14px] font-normal text-[#7E7E86] font-poppins">Salary (USD)</span>
+              <div className="flex flex-col items-center gap-[3px]">
+                <span className="text-[20px] font-medium text-[#34A853] font-poppins leading-[30px]">
+                  ${job.minSalary.toLocaleString()} - ${job.maxSalary.toLocaleString()}
+                </span>
+                <span className="text-[14px] font-normal text-[#7E7E86] font-poppins leading-[21px]">
+                  {job.salaryType} salary
+                </span>
               </div>
-              <span className="text-[13px] text-gray-500 font-medium tracking-wide">Job Location</span>
-              <span className="text-[14px] font-semibold text-gray-900 text-center">
-                {job.city}, {job.country}
-              </span>
             </div>
 
+            {/* Vertical Split Line */}
+            <div className="w-[1px] h-[64px] bg-[#E5E5E6]"></div>
+
+            {/* Location Section */}
+            <div className="flex-1 flex flex-col items-center justify-center gap-[8px]">
+              <Map className="w-[24px] h-[24px] text-[#5D5FEF]" strokeWidth={1.5} />
+              <div className="flex flex-col items-center gap-[3px]">
+                <span className="text-[14px] font-normal text-[#7E7E86] font-poppins">Job Location</span>
+                <span className="text-[16px] font-medium text-[#434348] font-poppins leading-[24px] text-center">
+                  {job.city}, {job.country}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Job Overview Card */}
-          <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-            <h3 className="text-[16px] font-semibold text-gray-900 mb-6 tracking-tight">Job Overview</h3>
+          {/* Card 2: Job Overview */}
+          <div className="flex flex-col border border-[#E5E5E6] rounded-[16px] p-[24px] gap-[16px] w-full">
+            <h3 className="text-[20px] font-medium text-[#434348] font-poppins leading-[30px]">Job Overview</h3>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-y-7 gap-x-3">
-              {/* Box 1 */}
-              <div className="flex flex-col gap-2.5">
-                <Calendar className="w-5 h-5 text-indigo-500" strokeWidth={1.5} />
-                <div>
-                   <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Job Posted</p>
-                   <p className="text-[13px] font-medium text-gray-900">
-                     {new Date(job.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                   </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-[24px_12px] w-full">
+              {/* Job Posted */}
+              <div className="flex flex-col items-start gap-[8px]">
+                <Calendar className="w-[24px] h-[24px] text-[#5D5FEF]" strokeWidth={1.5} />
+                <div className="flex flex-col gap-[3px]">
+                  <p className="text-[14px] font-normal text-[#7E7E86] font-poppins">Job Posted</p>
+                  <p className="text-[16px] font-medium text-[#434348] font-poppins">
+                    {new Date(job.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </p>
                 </div>
               </div>
 
-              {/* Box 2 */}
-              <div className="flex flex-col gap-2.5">
-                <Timer className="w-5 h-5 text-indigo-500" strokeWidth={1.5} />
-                <div>
-                   <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Job Expires on</p>
-                   <p className="text-[13px] font-medium text-gray-900">
-                     {job.expirationDate ? new Date(job.expirationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No Expiry'}
-                   </p>
+              {/* Job Expires */}
+              <div className="flex flex-col items-start gap-[8px]">
+                <Timer className="w-[24px] h-[24px] text-[#5D5FEF]" strokeWidth={1.5} />
+                <div className="flex flex-col gap-[3px]">
+                  <p className="text-[14px] font-normal text-[#7E7E86] font-poppins">Job Expires on</p>
+                  <p className="text-[16px] font-medium text-[#434348] font-poppins">
+                    {job.expirationDate ? new Date(job.expirationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No Expiry'}
+                  </p>
                 </div>
               </div>
 
-              {/* Box 3 */}
-              <div className="flex flex-col gap-2.5">
-                <Layers className="w-5 h-5 text-indigo-500" strokeWidth={1.5} />
-                <div>
-                   <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Job Level</p>
-                   <p className="text-[13px] font-medium text-gray-900">{job.jobLevel}</p>
+              {/* Job Level */}
+              <div className="flex flex-col items-start gap-[8px]">
+                <Layers className="w-[24px] h-[24px] text-[#5D5FEF]" strokeWidth={1.5} />
+                <div className="flex flex-col gap-[3px]">
+                  <p className="text-[14px] font-normal text-[#7E7E86] font-poppins">Job Level</p>
+                  <p className="text-[16px] font-medium text-[#434348] font-poppins">{job.jobLevel}</p>
                 </div>
               </div>
 
-              {/* Box 4 */}
-              <div className="flex flex-col gap-2.5">
-                <Briefcase className="w-5 h-5 text-indigo-500" strokeWidth={1.5} />
-                <div>
-                   <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Experience</p>
-                   <p className="text-[13px] font-medium text-gray-900">{job.experienceLevel}</p>
+              {/* Experience */}
+              <div className="flex flex-col items-start gap-[8px]">
+                <Briefcase className="w-[24px] h-[24px] text-[#5D5FEF]" strokeWidth={1.5} />
+                <div className="flex flex-col gap-[3px]">
+                  <p className="text-[14px] font-normal text-[#7E7E86] font-poppins">Experience</p>
+                  <p className="text-[16px] font-medium text-[#434348] font-poppins">{job.experienceLevel}</p>
                 </div>
               </div>
 
-              {/* Box 5 */}
-              <div className="flex flex-col gap-2.5">
-                <GraduationCap className="w-5 h-5 text-indigo-500" strokeWidth={1.5} />
-                <div>
-                   <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Education</p>
-                   <p className="text-[13px] font-medium text-gray-900">{job.educationLevel}</p>
+              {/* Education */}
+              <div className="flex flex-col items-start gap-[8px]">
+                <GraduationCap className="w-[24px] h-[24px] text-[#5D5FEF]" strokeWidth={1.5} />
+                <div className="flex flex-col gap-[3px]">
+                  <p className="text-[14px] font-normal text-[#7E7E86] font-poppins">Education</p>
+                  <p className="text-[16px] font-medium text-[#434348] font-poppins">{job.educationLevel}</p>
                 </div>
               </div>
             </div>

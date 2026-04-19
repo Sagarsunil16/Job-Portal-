@@ -14,7 +14,7 @@ export default function DashboardLayout({
         <Navbar />
         <div className="flex flex-1 overflow-hidden w-full max-w-full">
           <Sidebar />
-          <main className="flex-1 overflow-y-auto w-full max-w-full px-6 md:px-12 py-8 overflow-x-hidden">
+          <main className="flex-1 overflow-y-auto w-full max-w-full py-8 overflow-x-hidden">
             {children}
           </main>
         </div>

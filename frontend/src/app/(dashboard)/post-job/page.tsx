@@ -137,12 +137,12 @@ export default function PostJobPage() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-white p-4 sm:p-6 md:p-8 min-h-full gap-[32px]">
-      <div className="flex flex-col">
+    <div className="flex flex-col w-full bg-white min-h-full gap-[32px] pt-0 pb-12 animate-in fade-in">
+      <div className="flex flex-col px-4 md:px-8">
         <h1 className="text-[24px] font-medium text-[#434348] font-poppins leading-[36px]">Post a job</h1>
       </div>
       
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[32px] w-full animate-in fade-in">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[32px] w-full px-4 md:px-8 animate-in fade-in">
         {/* Row 1: Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[16px]">
           <div>
