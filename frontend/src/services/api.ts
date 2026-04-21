@@ -38,7 +38,8 @@ api.interceptors.response.use(
           // Update Redux
           store.dispatch(loginSuccess({ 
             employerId: data.data.employerId, 
-            accessToken: data.data.accessToken 
+            accessToken: data.data.accessToken,
+            logoUrl: data.data.logoUrl
           }));
           
           if (data.data.refreshToken) {
