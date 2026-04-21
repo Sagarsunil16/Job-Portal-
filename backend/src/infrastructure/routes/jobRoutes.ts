@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { JobController } from '../../controllers/JobController';
 import { JobManagementUseCase } from '../../useCases/jobUseCase/JobManagementUseCase';
-import { JobManagementEngine } from '../../engines/JobManagementEngine';
+import { JobManagementEngine } from '../../engines/jobManagementEngine/JobManagementEngine';
 import { JobRepository } from '../../repositories/jobRepository/JobRepository';
 import { EmployerRepository } from '../../repositories/employerRepository/EmployerRepository';
 import { AuthMiddleware } from '../middleware/Auth/AuthMiddleware';

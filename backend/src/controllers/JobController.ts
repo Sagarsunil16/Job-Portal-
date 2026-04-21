@@ -1,18 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import { JobManagementUseCase } from '../useCases/jobUseCase/JobManagementUseCase';
+import { IJobManagementUseCase } from '../useCases/jobUseCase/IJobManagementUseCase';
 import { IAuthMiddleware } from '../infrastructure/middleware/Auth/AuthMiddleware';
 import { ApiError } from '../domain/errors/ApiError';
 import { ErrorCode } from '../domain/enums/ErrorCode';
 
 export class JobController {
-  private jobUseCase: JobManagementUseCase;
+  private jobUseCase: IJobManagementUseCase;
   private auth: IAuthMiddleware;
 
   constructor({ 
     JobUseCase, 
     AuthMiddleware 
   }: { 
-    JobUseCase: JobManagementUseCase;
+    JobUseCase: IJobManagementUseCase;
     AuthMiddleware: IAuthMiddleware;
   }) {
     this.jobUseCase = JobUseCase;

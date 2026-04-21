@@ -1,5 +1,5 @@
 import { CreateJobDTO, JobDTO, UpdateJobDTO } from '../../domain/dtos/JobDTO';
-import { JobModel } from '../../infrastructure/database/schemas/JobSchema';
+import { JobModel } from '../../infrastructure/models/JobModel';
 
 export class JobRepository {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

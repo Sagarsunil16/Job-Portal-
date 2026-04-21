@@ -20,7 +20,7 @@ export class AuthController {
     this.auth = AuthMiddleware;
   }
 
-  async signupWithSetup(req: Request, res: Response, next: NextFunction) {
+  signupWithSetup = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const file = req.file && req.file.buffer ? { buffer: req.file.buffer, originalname: req.file.originalname, mimetype: req.file.mimetype, size: req.file.size } : undefined;
       const payload = { ...req.body };
@@ -39,9 +39,9 @@ export class AuthController {
       }
       next(error);
     }
-  }
+  };
 
-  async login(req: Request, res: Response, next: NextFunction) {
+  login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       await LoginSchema.validate(req.body, { abortEarly: false });
       const result = await this.authUseCase.login(req.body);
@@ -56,9 +56,9 @@ export class AuthController {
       }
       next(error);
     }
-  }
+  };
 
-  async refreshToken(req: Request, res: Response, next: NextFunction) {
+  refreshToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { refreshToken } = req.body;
       if (!refreshToken) {
@@ -74,9 +74,9 @@ export class AuthController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  async logout(req: Request, res: Response, next: NextFunction) {
+  logout = async (req: Request, res: Response, next: NextFunction) => {
     (await this.auth.verify())(req, res, async () => {
       try {
         const employerId = req.user?.employerId;
@@ -90,5 +90,5 @@ export class AuthController {
         next(error);
       }
     });
-  }
+  };
 }

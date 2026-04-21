@@ -1,8 +1,9 @@
-import { CreateJobDTO, JobDTO, UpdateJobDTO } from '../domain/dtos/JobDTO';
-import { JobRepository } from '../repositories/jobRepository/JobRepository';
-import { IEmployerRepository } from '../repositories/employerRepository/IEmployerRepository';
+import { CreateJobDTO, JobDTO, UpdateJobDTO } from '../../domain/dtos/JobDTO';
+import { JobRepository } from '../../repositories/jobRepository/JobRepository';
+import { IEmployerRepository } from '../../repositories/employerRepository/IEmployerRepository';
+import { IJobManagementEngine } from './IJobManagementEngine';
 
-export class JobManagementEngine {
+export class JobManagementEngine implements IJobManagementEngine {
   private jobRepository: JobRepository;
   private employerRepository: IEmployerRepository;
 
@@ -28,7 +29,7 @@ export class JobManagementEngine {
       throw new Error('Employer profile not found. Please complete your setup.');
     }
 
-    data.companyName = employer.companyName;
+    data.companyName = employer.companyName || '';
 
     return await this.jobRepository.create(data);
   }

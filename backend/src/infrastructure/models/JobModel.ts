@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobType } from '../../../domain/enums/JobType';
+import { JobType } from '../../domain/enums/JobType';
 
 export interface IJob extends Document {
   title: string;
